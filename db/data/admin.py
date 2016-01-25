@@ -10,29 +10,28 @@ from data.models import Exchange, DataVendor, Symbol, DailyPrice
 @admin.register(Exchange)
 class ExchangeAdmin(admin.ModelAdmin):
     list_display = ("name", "abbrev", "currency","city", "country",
-                    "utc_offset", "created_date", "last_updated_date")
-    list_filter = ("name", "country", "currency",)
+                    "created_date", "last_updated_date")
+    list_filter = ("country", "currency",)
     search_fields = ("name","abbrev")
 
 @admin.register(DataVendor)
 class DataVendorAdmin(admin.ModelAdmin):
-    list_display = ("name", "website_url", "support_email","created_date",
-                    "last_updated_date")
-    list_filter = ("name",)
+    list_display = ("name", "quotes_url", "historical_url", "support_email",
+                    "created_date", "last_updated_date")
     search_fields = ("name",)
 
 @admin.register(Symbol)
 class SymbolAdmin(admin.ModelAdmin):
     list_display = ("name", "ticker", "exchange", "currency",
                     "instrument", "sector", "created_date", "last_updated_date")
-    list_filter = ("instrument", "sector", "currency",)
-    search_fields = ("name", "ticker",)
+    list_filter = ("exchange", "instrument", "sector", "currency",)
+    search_fields = ("name", "ticker", "exchange__abbrev")
 
 @admin.register(DailyPrice)
 class DailyPriceAdmin(admin.ModelAdmin):
     list_display = ("symbol", "price_date", "open_price",
                     "high_price", "low_price", "close_price",
-                    "adj_close_price", "volume", "created_date",
-                    "last_updated_date")
-    list_filter = ("symbol",)
-    search_fields = ("symbol",)
+                    "adj_close_price", "volume", "data_vendor",
+                    "created_date", "last_updated_date")
+    list_filter = ("price_date", "symbol__exchange", "symbol__currency")
+    search_fields = ("symbol__ticker",)

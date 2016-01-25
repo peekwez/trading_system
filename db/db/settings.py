@@ -38,6 +38,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
+
+    # django apps
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.auth',
@@ -46,6 +48,10 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # vendor apps
+    'django_extensions',
+
+    # my apps
     'data',
 )
 
@@ -83,14 +89,6 @@ WSGI_APPLICATION = 'db.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#    }
-#}
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -108,14 +106,38 @@ CELERY_RESULT_BACKEND = "redis://localhost:6380"
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'America/Toronto'
+CELERY_TIMEZONE = 'EST'
+
+CELERYBEAT_SCHEDULE = {
+    'update-prices-every-10-minutes': {
+        'task': 'data.tasks.update_prices',
+        'schedule': crontab(minute='*/10',
+                            hour='9-18',
+                            day_of_week='mon-fri'),
+        'args': (),
+    },
+    'add-historical-prices-once-a-year': {
+        'task': 'data.tasks.add_historical_prices',
+        'schedule': crontab(day_of_week='mon',
+                            day_of_month='1-7',
+                            month_of_year='1'),
+        'args': (),
+    },
+    'update-symbols-once-a-month': {
+        'task': 'data.tasks.update_security_symbols',
+        'schedule': crontab(day_of_week='mon',
+                            day_of_month='1-7',
+                            month_of_year='*/1'),
+        'args': (),
+    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'EST'
 
 USE_I18N = True
 
@@ -128,3 +150,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+GRAPH_MODELS = {
+    'all_applications': True,
+    'group_models': True,
+}
+
+SHELL_PLUS_POST_IMPORTS = (
+    ('data.tasks', ('update_prices', 'update_securities_symbols',
+                    'add_historical_prices')),
+    ('data.utils', ('prices', 'symbols', 'exchanges')),
+)

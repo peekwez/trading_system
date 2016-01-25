@@ -4,3 +4,7 @@
 *.jpg
 *.eps
 *.ps
+logs
+*.pid
+*-schedule
+.ipynb_checkpoints/

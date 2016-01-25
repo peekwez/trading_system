@@ -52,12 +52,6 @@ class Exchange(CommonInfo):
         null=False
     )
 
-    utc_offset = models.CharField(
-        max_length=6,
-        null=False,
-        default="UTC"
-    )
-
     class Meta:
         unique_together = ("name",)
 
@@ -73,7 +67,12 @@ class DataVendor(CommonInfo):
         null=False
     )
 
-    website_url = models.URLField(
+    historical_url = models.URLField(
+        max_length=255,
+        null=True
+    )
+
+    quotes_url = models.URLField(
         max_length=255,
         null=True
     )
@@ -132,18 +131,18 @@ class DailyPrice(CommonInfo):
 
     """ Daily price model """
 
-    date_vendor = models.ForeignKey(
+    data_vendor = models.ForeignKey(
         'data.DataVendor',
         related_name="daily_prices",
         related_query_name="daily_price",
-        null=True
+        null=False
     )
 
     symbol = models.ForeignKey(
         'data.Symbol',
         related_name="daily_prices",
         related_query_name="daily_price",
-        null=True
+        null=False
     )
 
     price_date = models.DateField()
@@ -174,3 +173,7 @@ class DailyPrice(CommonInfo):
     )
 
     volume = models.IntegerField()
+
+    class Meta:
+        ordering = ('-price_date','symbol')
+        unique_together = ("symbol", "price_date")

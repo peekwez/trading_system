@@ -1,19 +1,13 @@
 # -*- coding: utf-8 -*-
-
-import os
-import datetime
+from __future__ import absolute_import
 
 from lxml.html import parse
 from urllib2 import urlopen
-from math import ceil
 
-
-# configure django
-os.environ['DJANGO_SETTINGS_MODULE'] = 'db.settings'
-import django
-django.setup()
+import pandas as pd
 
 # import database models
+from data.utils.misc import bcolors
 from data.models import Symbol, Exchange
 
 
@@ -61,34 +55,57 @@ def get_parse_wiki_index_list(index="S&P500"):
         elif index == "S&P/TSX":
             sd['sector'] = tds[2].text
             sd['currency'] = "CAD"
+            sd['ticker'] = sd['ticker'].replace('.','-') + ".TO" # Due to yahoo data
             try:
                 sd['exchange'] = Exchange.objects.get(abbrev="TSX")
-            except DoesNotExist:
-                raise("TSX exchange does not exist yet. Please create it")
+            except Exception, e:
+                raise Exception(bcolors.FAIL + "TSX exchange does not exist yet. Please create it : %s" %e + bcolors.ENDC)
 
         # Create a tuple (for the DB format) and append to the grand list
         symbols.append(sd)
 
     return symbols
 
-def create_securities_symbols(symbols):
+def update_snp500_exchanges():
+
+    # get all S&P Symbols
+    symbols = Symbol.objects.filter(currency="USD")
+    exchanges = ('NASDAQ', 'NYSE')
+    data = {}
+
+    for exchange in exchanges:
+        site_url = "http://www.nasdaq.com/screening/companies-by-name.aspx?exchange=%s&render=download" %(exchange)
+        try:
+            response = urlopen(site_url)
+        except Exception, e:
+            raise Exception(bcolors.FAIL + "Could not download company list for %s exchange : %s" %(exchange, e) + bcolors.ENDC)
+
+        data[exchange] = pd.read_csv(response)['Symbol']
+
+    for symbol in symbols:
+        for key in data:
+            if symbol.ticker in data[key].values:
+                exchange = key
+                break
+        symbol.exchange = Exchange.objects.get(abbrev=exchange)
+        symbol.save()
+
+def update_securities_symbols():
 
     """
     Save symbols to Symbol database mode.
 
     """
 
+    # get S&P symbols
+    symbols  = get_parse_wiki_index_list(index="S&P500")
+    symbols += get_parse_wiki_index_list(index="S&P/TSX")
+
     # instantiate symbol objects
     symbol_objs = []
     for symbol in symbols:
         sd = Symbol.objects.get_or_create(**symbol)
 
-def update_snp500_exchanges():
 
-    # get all S&P Symbols
-    symbols = Symbol.objects.filter(currency="USD")
-
-if __name__ == "__main__":
-    symbols  = get_parse_wiki_index_list(index="S&P500")
-    symbols += get_parse_wiki_index_list(index="S&P/TSX")
-    create_securities_symbols(symbols)
+    # update exchanges for US symbols
+    update_snp500_exchanges()

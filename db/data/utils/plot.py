@@ -1,0 +1,174 @@
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import
+
+
+# import panda and matplotlib libraries
+import pandas as pd
+
+# import matplotlib
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+from matplotlib import rc, gridspec
+from matplotlib.ticker import FuncFormatter, MaxNLocator
+
+# import some math libraries
+from math import floor, ceil
+
+# import database models
+from data.utils.misc import pcolors
+from data.models import DailyPrice, Symbol
+
+# matplotlib settings
+mpl.rcParams['ps.usedistiller']  = 'xpdf'
+mpl.rcParams['ps.distiller.res'] = 6000
+font = {'family': 'monospace',
+        'monospace':['monaco'],
+        'weight': 'normal',
+        'size': 16
+}
+
+rc('font', **font)
+rc('text', usetex=True)
+rc('xtick', labelsize=16)
+rc('ytick', labelsize=16)
+rc('legend', labelspacing=0.2, handleheight=1.)
+rc('savefig', format='pdf', dpi='400')
+rc('pdf', fonttype=3)
+
+
+# plot function
+class PlotSymbol:
+
+    '''
+    Plots figures for key, start and end dates specified
+    for the tickers passed to the class.
+
+    '''
+
+    def __init__(self, tickers=['AAPL']):
+
+        # initialized tickers, symbols and prices
+        self.tickers = tickers
+        self.nr_tickers = len(tickers)
+        self.symbols = Symbol.objects.filter(ticker__in=tickers)
+        self.prices = DailyPrice.objects.select_related('symbol').filter(
+            symbol__ticker__in=tickers)
+
+
+    def plot(self, key='close_price', ma_type='simple', start_date='', end_date=''):
+
+        # build kwargs
+        kwargs = {}
+        if start_date != '': kwargs['price_date__gte'] = start_date
+        if end_date   != '': kwargs['price_date__lte'] = end_date
+
+        # loop through all tickers
+        for ticker in self.tickers:
+            self.__plot(key, ticker, ma_type, **kwargs)
+
+    def __plot(self, key, ticker, ma_type, **kwargs):
+
+        # get prices, symbol and company name
+        prices = self.prices.filter(symbol__ticker=ticker,**kwargs).order_by('price_date').values()
+        symbol = self.symbols.get(ticker=ticker)
+        company = symbol.name
+
+        # create panda data frame and time series
+        df = pd.DataFrame.from_records(prices)
+        ts = pd.Series([float(x) for x in df[key]], index=df['price_date'])
+        vs = pd.Series([float(x) for x in df['volume']], index=df['price_date'])
+
+        # get figures and sizes
+        fig = plt.figure(ticker+ma_type, figsize=(16,15))
+        gs  = gridspec.GridSpec(2,1, height_ratios=[2,1])
+        ax1 = fig.add_subplot(gs[0])
+        ax2 = fig.add_subplot(gs[1])
+
+
+        # ADD SUBPLOT FOR KEY
+        # ====================
+
+        # plot values for key
+        ts.plot(ax=ax1, color=pcolors.SYMB, legend=True, label='{0:s}'.format(ticker))
+
+        # add fill to plot
+        ax1.fill_between(ts.index, ts.values, facecolor=pcolors.FILL, alpha=0.9)
+
+        # add moving averages
+        ma_keys = ['MA_5', 'MA_10', 'MA_20', 'MA_30', 'MA_40', 'MA_50', 'MA_60']
+        len_ma = len(ma_keys)
+        for k in range(len_ma):
+            ma   = ma_keys[k]
+            tmp  = ma.split('_')
+            days = int(tmp[1])
+            end_label = ' '.join(word for word in tmp)
+
+            # plot simple moving average
+            if ma_type == 'simple':
+                label = 'S' + end_label
+                pd.rolling_mean(ts,days).plot(ax=ax1,
+                                              color=pcolors.MA[ma],
+                                              legend=True,
+                                              label=label)
+            elif ma_type == 'exponential':
+                label = 'E' + end_label
+                pd.ewma(ts,span=days).plot(ax=ax1,
+                                           color=pcolors.MA[ma],
+                                           legend=True,
+                                           label=label)
+
+        # function for y label name
+        name = lambda w: ' '.join(word.capitalize() for word in w.split('_'))
+
+        # set axis labels
+        ax1.set_xlabel('Date', fontsize=18)
+        ax1.set_ylabel('{0:s}'.format(name(key)), fontsize=18)
+
+        # turn grid on
+        ax1.xaxis.grid()
+        ax1.yaxis.grid()
+
+        # formatter for y-axis
+        ax1_yfmt = FuncFormatter(lambda x, pos: '{0:g}'.format(x/1.))
+        ax1.yaxis.set_major_formatter(ax1_yfmt)
+
+        # set limits for y-axis
+        ymax = ts.max()
+        ymin = ts.min()
+        ax1.set_ylim([floor(ymin), max(ymax, floor(ymax)+0.5)])
+
+        # add legends
+        legs = ax1.legend(frameon=False, fontsize=17, loc='best')
+        for leg in legs.legendHandles:
+            leg.set_linewidth(4.0)
+
+        # add title for this plot
+        ax1.set_title(
+            '{0:s} for {1:s}({2:s}) from {3:s} to {4:s}'.format(name(key),
+                                                                company,
+                                                                ticker,
+                                                                kwargs['price_date__gte'],
+                                                                kwargs['price_date__lte']),
+            fontsize=20)
+
+        # ADD SUBPLOT OF VOLUME TRADED
+        # ============================
+
+        # plot vertical lines for volume
+        ax2.vlines(vs.index, [0], vs.values, color=pcolors.VLINE)
+
+        # set axis labels
+        ax2.set_xlabel('Date', fontsize=18)
+        ax2.set_ylabel('Volume (in 1000 shares)', fontsize=18)
+
+        # turn on grid
+        ax2.xaxis.grid()
+        ax2.yaxis.grid()
+
+        # formatter for y-axis
+        ax2_yfmt = FuncFormatter(lambda x, pos: '{0:g}'.format(x/1000))
+        ax2.yaxis.set_major_formatter(ax2_yfmt)
+        ax2.yaxis.set_major_locator(MaxNLocator(prune='upper')) # remove last tick label
+
+        # remove horizontal space between subplots
+        fig.subplots_adjust(hspace=0)

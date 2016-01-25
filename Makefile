@@ -1,4 +1,6 @@
 
+option?=
+
 include Makefile.in
 
 help:
@@ -12,6 +14,17 @@ help:
 	@echo " createsu          Create Django admin superuser"
 	@echo " graph_models      Graph and save Django app models"
 	@echo ""
+
+celery:
+	supervisord -c supervisord.conf
+
+status:
+	supervisorctl status db-celery:db-worker
+	supervisorctl status db-celery:db-worker
+
+stopall:
+	supervisorctl stop all
+	supervisorctl shutdown
 
 database: create_db makemigrations migrate
 
@@ -40,3 +53,13 @@ createsu:
 graph_models:
 	$(call _info, Graphing Django app models)
 	./db/manage.py graph_models --pygraphviz -a -g -o graphed_models.png
+
+# start server
+runserver_plus:
+	$(call _info, Start server with Werkzeug debugger)
+	./db/manage.py runserver_plus
+
+# shell_plus
+shell_plus:
+	$(call _info, Shell plus)
+	./db/manage.py shell_plus
