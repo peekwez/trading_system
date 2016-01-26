@@ -7,7 +7,9 @@ import pandas as pd
 
 # import matplotlib
 import matplotlib as mpl
+mpl.use("TKagg")
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
 from matplotlib import rc, gridspec
 from matplotlib.ticker import FuncFormatter, MaxNLocator
 
@@ -21,16 +23,11 @@ from data.models import DailyPrice, Symbol
 # matplotlib settings
 mpl.rcParams['ps.usedistiller']  = 'xpdf'
 mpl.rcParams['ps.distiller.res'] = 6000
-font = {'family': 'monospace',
-        'monospace':['monaco'],
-        'weight': 'normal',
-        'size': 16
-}
 
-rc('font', **font)
-rc('text', usetex=True)
-rc('xtick', labelsize=16)
-rc('ytick', labelsize=16)
+font_prop = fm.FontProperties(fname="monaco.ttf")
+font_prop.set_size(14)
+font_prop.set_weight(200)
+
 rc('legend', labelspacing=0.2, handleheight=1.)
 rc('savefig', format='pdf', dpi='400')
 rc('pdf', fonttype=3)
@@ -72,6 +69,7 @@ class PlotSymbol:
         prices = self.prices.filter(symbol__ticker=ticker,**kwargs).order_by('price_date').values()
         symbol = self.symbols.get(ticker=ticker)
         company = symbol.name
+        oticker = symbol.oticker
 
         # create panda data frame and time series
         df = pd.DataFrame.from_records(prices)
@@ -79,7 +77,7 @@ class PlotSymbol:
         vs = pd.Series([float(x) for x in df['volume']], index=df['price_date'])
 
         # get figures and sizes
-        fig = plt.figure(ticker+ma_type, figsize=(16,15))
+        fig = plt.figure(oticker+ma_type, figsize=(16,15))
         gs  = gridspec.GridSpec(2,1, height_ratios=[2,1])
         ax1 = fig.add_subplot(gs[0])
         ax2 = fig.add_subplot(gs[1])
@@ -89,7 +87,7 @@ class PlotSymbol:
         # ====================
 
         # plot values for key
-        ts.plot(ax=ax1, color=pcolors.SYMB, legend=True, label='{0:s}'.format(ticker))
+        ts.plot(ax=ax1, color=pcolors.SYMB, legend=True, label='{0:s}'.format(oticker))
 
         # add fill to plot
         ax1.fill_between(ts.index, ts.values, facecolor=pcolors.FILL, alpha=0.9)
@@ -121,8 +119,13 @@ class PlotSymbol:
         name = lambda w: ' '.join(word.capitalize() for word in w.split('_'))
 
         # set axis labels
-        ax1.set_xlabel('Date', fontsize=18)
-        ax1.set_ylabel('{0:s}'.format(name(key)), fontsize=18)
+        ax1.set_xlabel('Date', fontproperties=font_prop, size=16)
+        ax1.set_ylabel('{0:s}'.format(name(key)), fontproperties=font_prop, size=16)
+
+        # set axis ticks
+        for label in ax1.get_xticklabels():
+            label.set_fontproperties(font_prop)
+        ax1.set_yticklabels(ax1.get_yticks(), fontproperties=font_prop)
 
         # turn grid on
         ax1.xaxis.grid()
@@ -138,18 +141,18 @@ class PlotSymbol:
         ax1.set_ylim([floor(ymin), max(ymax, floor(ymax)+0.5)])
 
         # add legends
-        legs = ax1.legend(frameon=False, fontsize=17, loc='best')
+        legs = ax1.legend(frameon=False, fontsize=18, loc='best', prop=font_prop)
         for leg in legs.legendHandles:
             leg.set_linewidth(4.0)
 
         # add title for this plot
         ax1.set_title(
-            '{0:s} for {1:s}({2:s}) from {3:s} to {4:s}'.format(name(key),
+            '{0:s} for {1:s} ({2:s}) from {3:s} to {4:s}'.format(name(key),
                                                                 company,
-                                                                ticker,
+                                                                oticker,
                                                                 kwargs['price_date__gte'],
                                                                 kwargs['price_date__lte']),
-            fontsize=20)
+            fontproperties=font_prop, size=18)
 
         # ADD SUBPLOT OF VOLUME TRADED
         # ============================
@@ -158,8 +161,13 @@ class PlotSymbol:
         ax2.vlines(vs.index, [0], vs.values, color=pcolors.VLINE)
 
         # set axis labels
-        ax2.set_xlabel('Date', fontsize=18)
-        ax2.set_ylabel('Volume (in 1000 shares)', fontsize=18)
+        ax2.set_xlabel('Date', fontproperties=font_prop, size=16)
+        ax2.set_ylabel('Volume (in 1000 shares)', fontproperties=font_prop, size=16)
+
+        # set axis ticks
+        for label in ax2.get_xticklabels():
+            label.set_fontproperties(font_prop)
+        ax2.set_yticklabels(ax2.get_yticks(), fontproperties=font_prop)
 
         # turn on grid
         ax2.xaxis.grid()

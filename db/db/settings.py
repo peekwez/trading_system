@@ -161,3 +161,12 @@ SHELL_PLUS_POST_IMPORTS = (
                     'add_historical_prices')),
     ('data.utils', ('prices', 'symbols', 'exchanges', 'misc', 'plot')),
 )
+
+
+NOTEBOOK_ARGUMENTS = [
+    '--port=8002',
+]
+
+IPYTHON_ARGUMENTS = [
+    '--debug',
+]

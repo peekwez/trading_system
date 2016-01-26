@@ -1,5 +1,5 @@
 
-option?=
+option?=""
 
 include Makefile.in
 
@@ -14,6 +14,9 @@ help:
 	@echo " createsu          Create Django admin superuser"
 	@echo " graph_models      Graph and save Django app models"
 	@echo ""
+
+flower:
+	celery --app=db.celery:app flower --port=8002
 
 celery:
 	supervisord -c supervisord.conf
@@ -61,5 +64,5 @@ runserver_plus:
 
 # shell_plus
 shell_plus:
-	$(call _info, Shell plus)
-	./db/manage.py shell_plus
+	$(call _info, Starting ipython shell with notebook plugin)
+	./db/manage.py shell_plus --$(option)
