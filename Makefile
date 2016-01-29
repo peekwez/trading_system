@@ -1,5 +1,5 @@
-
 option?=""
+system?=db-celery:db-worker
 
 include Makefile.in
 
@@ -21,9 +21,14 @@ flower:
 celery:
 	supervisord -c supervisord.conf
 
+restart:
+	supervisorctl restart $(system)
+
 status:
 	supervisorctl status db-celery:db-worker
 	supervisorctl status db-celery:db-worker
+	supervisorctl status web-client:flower
+	supervisorctl status web-client:notebook
 
 stopall:
 	supervisorctl stop all
