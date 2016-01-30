@@ -59,11 +59,11 @@ Starts Django's development server. The `admin` page can is located at [http://l
   ```
 
 * execute the following commands inside a cell in the [`ipython notebook`](http://localhost:8002) using the `Django Shell-Plus` kernel
-```python
-create_exchanges.delay() # adds TSX, TSXV, NASDAQ and NYSE exchanges to database
-update_securities_symbols.delay() # adds S&P500 and S&P/TSX symbols
-add_historical_prices.delay() # add prices from Jan 01, 10 years ago to today
-```
+  ```python
+  create_exchanges.delay() # adds TSX, TSXV, NASDAQ and NYSE exchanges to database
+  update_securities_symbols.delay() # adds S&P500 and S&P/TSX symbols
+  add_historical_prices.delay() # add prices from Jan 01, 10 years ago to today
+  ```
 
 ### Updating Tickers Manually
 * add the ticker(s) information to the **Symbols table** using the [Admin Page](http://localhost:8000/admin)
