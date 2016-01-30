@@ -81,8 +81,8 @@ The following process are started in the background by supervisor
 ## **Miscellaneous**
 ### Sample Python Script
 This script can be run in [`ipython notebook`](http://localhost:8002) to generate a
-simple and/or exponential moving average for all tickers whose value is **$2.5**
-for the specified date
+simple and/or exponential moving average for all tickers whose value is less
+or equal to **$2.5** on the specified date
 
 ```python
 # -*- coding: utf-8 -*-
