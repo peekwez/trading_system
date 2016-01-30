@@ -40,14 +40,11 @@ The above command performs the following tasks
 The following process are started in the background by supervisor
 * `celery worker`
 * `celery beat`
+* `django development server`  - the `admin` page is at [http://localhost:8000/admin](http://localhost:8000/admin)
 * `celery flower` at [http://localhost:8001](http://localhost:8001)
 * `ipython notebook` at [http://localhost:8002](http://localhost:8002) with a `Django Shell-Plus` kernel
 * `redis-commander` at [http://localhost:8003](http://localhost:8003)
 
-### Django Server
-* `$ make runserver`
-
-Starts Django's development server. The `admin` page can is located at [http://localhost:8000/admin](http://localhost:8000/admin).
 
 ### Populating Database
 * log in to the [Admin Page](http://localhost:8000/admin) and add the following information for **Yahoo** to the **Data Vendor table**
@@ -80,7 +77,6 @@ Starts Django's development server. The `admin` page can is located at [http://l
 `cd` into application directory and execute the following commands
 * `$ make docker-services`
 * `$ make processes`
-* `$ make runserver`
 
 ## **Miscellaneous**
 ### Sample Python Script
