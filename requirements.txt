@@ -22,7 +22,6 @@ itsdangerous==0.24
 Jinja2==2.7.3
 jsonschema==2.5.1
 kombu==3.0.32
--e git+https://github.com/numba/llvmlite.git@7139d8b206270d5a781b57f4afbbe7a9aa510595#egg=llvmlite
 lxml==3.5.0
 MarkupSafe==0.23
 matplotlib==1.5.0
