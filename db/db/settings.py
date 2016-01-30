@@ -159,5 +159,14 @@ GRAPH_MODELS = {
 SHELL_PLUS_POST_IMPORTS = (
     ('data.tasks', ('update_prices', 'update_securities_symbols',
                     'add_historical_prices')),
-    ('data.utils', ('prices', 'symbols', 'exchanges')),
+    ('data.utils', ('prices', 'symbols', 'exchanges', 'misc', 'plot')),
 )
+
+
+NOTEBOOK_ARGUMENTS = [
+    '--port=8002',
+]
+
+IPYTHON_ARGUMENTS = [
+    '--debug',
+]

@@ -127,6 +127,14 @@ class Symbol(CommonInfo):
     def __str__(self):
         return self.ticker
 
+    @property
+    def oticker(self):
+        if self.currency == 'CAD':
+            ticker = self.ticker.split('.')
+            return ticker[0].replace('-','.')
+        else:
+            return ticker
+
 class DailyPrice(CommonInfo):
 
     """ Daily price model """
