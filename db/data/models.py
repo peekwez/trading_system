@@ -43,8 +43,7 @@ class Exchange(CommonInfo):
     )
 
     country = models.CharField(
-        max_length=255,
-        null=True
+            null=True
     )
 
     currency = models.CharField(

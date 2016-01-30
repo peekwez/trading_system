@@ -58,11 +58,11 @@ Starts Django's development server. The `admin` page can is located at [http://l
   Support email = support@yahoo.com
   ```
 
-* execute the following commands inside a cell in the [`ipython notebook`](http://localhost:8002) using the `Django Shell-Plus` kernel
+* execute the _celery_ tasks inside an [`ipython notebook`](http://localhost:8002) cell using the `Django Shell-Plus` kernel
   ```python
   create_exchanges.delay() # adds TSX, TSXV, NASDAQ and NYSE exchanges to database
-  update_securities_symbols.delay() # adds S&P500 and S&P/TSX symbols
-  add_historical_prices.delay() # add prices from Jan 01, 10 years ago to today
+  update_securities_symbols.delay() # adds S&P500 and S&P/TSX tickers to database
+  add_historical_prices.delay() # adds daily prices from Jan 01, 10 years ago to today
   ```
 
 ### Updating Tickers Manually
