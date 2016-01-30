@@ -7,7 +7,7 @@ Install the following system dependencies
 * [virtualenv](https://virtualenv.readthedocs.org/en/latest/installation.html)
 * [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/install.html)
 * [Node.js](https://nodejs.org/en/)
-* [docker](https://docs.docker.com/engine/installation/()
+* [docker](https://docs.docker.com/engine/installation/)
 * [docker-compose](https://docs.docker.com/compose/install/)
 
 ## **Installation**
@@ -40,14 +40,14 @@ The above command performs the following tasks
 The following process are started in the background by supervisor
 * `celery worker`
 * `celery beat`
-* `celery flower` at http://localhost:8001
-* `ipython notebook` at http://localhost:8002 with a `Django Shell-Plus` kernel
-* `redis-commander` at http://localhost:8003
+* `celery flower` at [http://localhost:8001]()
+* `ipython notebook` at [http://localhost:8002]() with a `Django Shell-Plus` kernel
+* `redis-commander` at [http://localhost:8003]()
 
 ### Django Server
 * `$ make runserver`
 
-Starts Django's development server. The `admin` page can is located at http://localhost:8000/admin.
+Starts Django's development server. The `admin` page can is located at [http://localhost:8000/admin]().
 
 ### Populating Database
 * log in to the [Admin Page](http://localhost:8000/admin) and add the following information for **Yahoo** to the **Data Vendor table**
