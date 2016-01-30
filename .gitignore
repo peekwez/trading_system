@@ -8,3 +8,4 @@ logs
 *.pid
 *-schedule
 .ipynb_checkpoints/
+secrets.txt
