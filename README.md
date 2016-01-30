@@ -69,9 +69,9 @@ Starts Django's development server. The `admin` page can is located at [http://l
 * add the ticker(s) information to the **Symbols table** using the [Admin Page](http://localhost:8000/admin)
 
 * update the historical prices for the added tickers by executing the following commands inside a cell in the [`ipython notebook`](http://localhost:8002) using the `Django Shell-Plus` kernel
-```python
-add_prices_for_tickers.delay(tickers=['tk1','tk2','...'])
-```
+  ```python
+  add_prices_for_tickers.delay(tickers=['tk1','tk2','...'])
+  ```
 
 ### Daily Prices
 * `update_prices` _celery_ task is executed every 10 minutes between 9am-6pm during the weekdays using `celery-beat` as the scheduler and the `celery-worker` as the task queue. _Redis_ is used as the _celery_ broker.
