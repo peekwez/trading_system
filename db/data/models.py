@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals
 
-#import django models
+# import django models
 from django.db import models
 from django.db.models import Q
 

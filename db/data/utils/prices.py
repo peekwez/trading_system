@@ -82,7 +82,7 @@ def add_prices_for_tickers(tickers, start_date=None):
 
 
     # get symbols and update them
-    symbol = Symbol.objects.filter(ticker__in=tickers)
+    symbols = Symbol.objects.filter(ticker__in=tickers)
     for symbol in symbols:
         params = "?s=%s&" %symbol.ticker + date_params
         site_url = base_url + params

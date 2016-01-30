@@ -7,67 +7,60 @@ help:
 	@echo "Choose 'make <target> where target is one of the following:"
 	@echo ""
 	@echo "----------------------------"
-	@echo " setup           Start docker containers, create database and log files"
-	@echo " logs            Create log files"
-	@echo " containers      Start postgres and redis docker containters"
-	@echo " flower          Start celery flower on port 8001"
-	@echo " notebook        Start ipython notebook on port 8002"
-	@echo " redis           Start redis web-client on port 8003"
-	@echo " worker          Start celery worker"
-	@echo " beat            Start celery beat"
-	@echo " processes       Start supervisor processes in background"
-	@echo " restart         Restart specific supervisord process"
-	@echo " restartall      Restart all supervisord processes"
-	@echo " status          Check status or supervisord processes"
-	@echo " stopall         Stop all supervisord process"
-	@echo " database        Create and migrate Django apps to database"
-	@echo " createdb        Create database"
-	@echo " migrate         Migrate Django apps to database"
-	@echo " makemigrations  Create Django apps migrations"
-	@echo " createsu        Create Django admin superuser"
-	@echo " graphmodels     Graph and save Django app models"
-	@echo " runserverplus   Start Django development server on port 8000"
-	@echo " shellplus       Start Django shell using ipython"
+	@echo " setup             Start docker containers, create database and log files"
+	@echo " process-logs      Create log files"
+	@echo " docker-services   Start postgres and redis docker containters"
+	@echo " celery-flower     Start celery flower on port 8001"
+	@echo " ipython-notebook  Start ipython notebook on port 8002"
+	@echo " redis-commander   Start redis web-client on port 8003"
+	@echo " celery-worker     Start celery worker"
+	@echo " celery-beat       Start celery beat"
+	@echo " processes         Start supervisor processes in background"
+	@echo " restart           Restart specific supervisord process"
+	@echo " restartall        Restart all supervisord processes"
+	@echo " status            Check status or supervisord processes"
+	@echo " stopall           Stop all supervisord process"
+	@echo " database          Create and migrate Django apps to database"
+	@echo " createdb          Create database"
+	@echo " migrate           Migrate Django apps to database"
+	@echo " makemigrations    Create Django apps migrations"
+	@echo " createsu          Create Django admin superuser"
+	@echo " graphmodels       Graph and save Django app models"
+	@echo " runserverplus     Start Django development server on port 8000"
+	@echo " shellplus         Start Django shell using ipython"
 	@echo ""
 
-setup: containers database logs
+setup: docker-services database process-logs
 
 
-logs:
+process-logs:
 	$(call _info, Creating logs files)
-	cd db
-	mkdir logs
-	cd logs
-	touch supervisord.log
-	touch celery-worker.log
-	touch celery-beat.log
-	touch flower.log
-	touch notebook.log
-	touch redis.log
-	cd ../../
+	cd db/; mkdir logs; cd logs/; \
+	touch supervisord.log celery-worker.log \
+	celery-beat.log flower.log notebook.log \
+	redis.log
 
-containers:
+docker-services:
 	$(call _info, Starting postgres and redis docker containers)
-	docker restart ironapi_db_1
-	docker restart ironapi_redis_1
+	docker-compose -p trading up -d db redis
 
-flower:
+celery-flower:
 	$(call _info, Starting celery flower on port 8001)
 	celery --app=db.celery:app flower --port=8001
 
-notebook:
+ipython-notebook:
 	$(call _info, Starting ipython notebook on port 8002)
-	ipython notebook --port=8002
+	./db/manage.py shel_lplus --notebook #./db/manage.py ipython notebook --port=8002
 
-redis:
+redis-commander:
 	$(call _info, Starting redis-commander web client on port 8003)
-	redis-commander --redis-port 6380 --port=8003
+	redis-commander --redis-port 6378 --port=8003
 
-worker:
+celery-worker:
 	$(call _info, Starting celery worker)
 	celery worker --app=db.celery:app
 
-beat:
+celery-beat:
 	$(call _info, Starting celery beat)
 	celery beat --app=db.celery:app
 
@@ -99,13 +92,13 @@ stopall:
 	supervisorctl stop all
 	supervisorctl shutdown
 
-database: createdb makemigrations migrate
+database: createdb makemigrations migrate createsu
 
 # execute this in web-app container
 createdb:
-	$(call _info, Creating databases)
-	dropdb -h localhost -p 5433 -U postgres securities_master --if-exists
-	createdb -h localhost -p 5433 -U postgres securities_master
+	$(call _info, Creating database)
+	dropdb -h localhost -p 5431 -U postgres securities_master --if-exists
+	createdb -h localhost -p 5431 -U postgres securities_master
 
 # migrate db changes
 migrate:
@@ -136,3 +129,8 @@ runserverplus:
 shellplus:
 	$(call _info, Starting ipython shell with notebook plugin)
 	./db/manage.py shell_plus --$(option)
+
+# tree
+tree:
+	$(call _info, Showing directory structure for project)
+	tree -I '*.pyc|logs|*.pid|*schedule|*.png|00*'

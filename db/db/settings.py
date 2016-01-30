@@ -96,13 +96,13 @@ DATABASES = {
         'PASSWORD': "",
         'USER': "postgres",
         'HOST': "localhost",
-        'PORT': "5433",
+        'PORT': "5431",
     }
 }
 
 # Celery redis broker
-BROKER_URL = "redis://localhost:6380"
-CELERY_RESULT_BACKEND = "redis://localhost:6380"
+BROKER_URL = "redis://localhost:6378"
+CELERY_RESULT_BACKEND = "redis://localhost:6378"
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -158,15 +158,11 @@ GRAPH_MODELS = {
 
 SHELL_PLUS_POST_IMPORTS = (
     ('data.tasks', ('update_prices', 'update_securities_symbols',
-                    'add_historical_prices')),
+                    'add_historical_prices', 'add_prices_for_tickers',
+                    'create_exchanges',)),
     ('data.utils', ('prices', 'symbols', 'exchanges', 'misc', 'plot')),
 )
 
-
 NOTEBOOK_ARGUMENTS = [
     '--port=8002',
-]
-
-IPYTHON_ARGUMENTS = [
-    '--debug',
 ]
