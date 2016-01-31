@@ -17,15 +17,16 @@ Install the following system dependencies
 * `$ cd trading_system`
 
 ### Install Application Dependencies
-* ```
-  $ sudo apt-get install -y gcc curl git \
-    	 	 	    python-dev libpq-dev \
-			    libssl-dev postgresql-client \
-			    libxml2-dev libxsltl-dev
-  ```
+copy and paste the lines below to install the following dependencies
+
+* `$ sudo apt-get install -y gcc curl git python-dev libpq-dev libssl-dev postgresql-client libxml2-dev libxsltl-dev`
+
 * `$ sudo apt-get build-dep python-matplotlib`
+
 * `$ pip install -r requirements.txt`
+
 * `$ npm install -g redis-commander`
+
 
 ## **Setup Instructions**
 
