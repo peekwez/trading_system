@@ -1,6 +1,6 @@
 # Kapp Consulting - Trading System
 ---
-## **System Dependencies**
+## **System Dependencies (Ubuntu 14.04) **
 Install the following system dependencies
 
 * [pip](https://pip.pypa.io/en/stable/installing/)
@@ -17,6 +17,13 @@ Install the following system dependencies
 * `$ cd trading_system`
 
 ### Install Application Dependencies
+* ```
+  $ sudo apt-get install -y gcc curl git \
+    	 	 	    python-dev libpq-dev \
+			    libssl-dev postgresql-client \
+			    libxml2-dev libxsltl-dev
+  ```
+* `$ sudo apt-get build-dep python-matplotlib`
 * `$ pip install -r requirements.txt`
 * `$ npm install -g redis-commander`
 
