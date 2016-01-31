@@ -20,7 +20,7 @@ Install the following system dependencies
 ### Install Application Dependencies
 copy and paste the lines below to install the following dependencies
 
-* `$ sudo apt-get install -y gcc curl git python-dev libpq-dev libssl-dev postgresql-client libxml2-dev libxsltl-dev libgraphviz-dev gfortran libopenblas-dev liblapack-dev`
+* `$ sudo apt-get install -y build-essential gfortran gcc libatlas-base-dev  curl git python-dev libpq-dev libssl-dev postgresql-client libxml2-dev libxsltl-dev libgraphviz-dev libopenblas-dev liblapack-dev`
 
 * `$ sudo apt-get build-dep python-matplotlib`
 

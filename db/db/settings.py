@@ -164,5 +164,6 @@ SHELL_PLUS_POST_IMPORTS = (
 )
 
 NOTEBOOK_ARGUMENTS = [
+    '--ip=0.0.0.0',
     '--port=8002',
 ]
