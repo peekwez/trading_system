@@ -1,6 +1,6 @@
 # Kapp Consulting - Trading System
 ---
-## **System Dependencies (Ubuntu 14.04) **
+## **System Dependencies (Ubuntu 14.04)**
 Install the following system dependencies
 
 * [pip](https://pip.pypa.io/en/stable/installing/)
