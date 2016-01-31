@@ -14,12 +14,13 @@ Install the following system dependencies
 
 ### Clone Repository.
 * `$ git clone git@github.com:<peekwez>/trading_system.git`
+
 * `$ cd trading_system`
 
 ### Install Application Dependencies
 copy and paste the lines below to install the following dependencies
 
-* `$ sudo apt-get install -y gcc curl git python-dev libpq-dev libssl-dev postgresql-client libxml2-dev libxsltl-dev`
+* `$ sudo apt-get install -y gcc curl git python-dev libpq-dev libssl-dev postgresql-client libxml2-dev libxsltl-dev libgraphviz-dev gfortran libopenblas-dev liblapack-dev`
 
 * `$ sudo apt-get build-dep python-matplotlib`
 
@@ -43,6 +44,7 @@ The above command performs the following tasks
 
 ### Supervisor Processes
 * `$ make processes`
+
 * `$ make status` -- check if processes are up and running
 
 The following process are started in the background by supervisor
@@ -84,6 +86,7 @@ The following process are started in the background by supervisor
 ## **After System Restart/Reboot**
 `cd` into application directory and execute the following commands
 * `$ make docker-services`
+
 * `$ make processes`
 
 ## **Miscellaneous**
