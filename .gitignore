@@ -9,3 +9,4 @@ logs
 *-schedule
 .ipynb_checkpoints/
 secrets.txt
+static/

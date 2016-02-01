@@ -140,3 +140,5 @@ tree:
 collectstatic:
 	$(call _info, Collecting static files)
 	./db/manage.py collectstatic --noinput
+	cp -r ${IPYTHON_STATIC}/* db/static/
+	cp -r ${REDIS_STATIC}/* db/static/
