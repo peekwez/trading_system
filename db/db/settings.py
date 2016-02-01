@@ -124,7 +124,7 @@ CELERYBEAT_SCHEDULE = {
         'args': (),
     },
     'update-symbols-once-a-month': {
-        'task': 'data.tasks.update_security_symbols',
+        'task': 'data.tasks.update_securities_symbols',
         'schedule': crontab(day_of_week='mon',
                             day_of_month='1-7',
                             month_of_year='*/1'),
