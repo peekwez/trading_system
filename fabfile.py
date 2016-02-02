@@ -47,5 +47,6 @@ def deploy(restart_servers=False):
         # if restart is True, restart supervisor tasks
         if restart_servers:
             with cd("~/{.pwd}/".format(env)):
-                make("stopall")
-                make("processes")
+                run("pwd")
+                run("make stopall")
+                run("make processes")
