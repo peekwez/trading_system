@@ -50,7 +50,7 @@ celery-flower:
 
 ipython-notebook:
 	$(call _info, Starting ipython notebook on port 8002)
-	./db/manage.py shel_lplus --notebook #./db/manage.py ipython notebook --port=8002
+	./db/manage.py shell_plus --notebook
 
 redis-commander:
 	$(call _info, Starting redis-commander web client on port 8003)
