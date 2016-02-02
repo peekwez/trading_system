@@ -34,17 +34,17 @@ def make(target,option=''):
     run("make {0:s} {1:s}".format(target, option))
 
 @task
-def deploy(restart=False):
+def deploy(restart_servers=False):
     with settings(warn_only=True):
         git_push()
         if run("cd ~/{.pwd}".format(env)).failed:
             git_clone()
         else:
-            run("cd ~/{.pwd}".format(env))
-            git_pull()
+            with run("cd ~/{.pwd}".format(env)):
+                git_pull()
 
         # if restart is True, restart supervisor tasks
-        if restart:
+        if restart_servers:
             run("pwd")
         #    make('stopall')
         #    make('processes')
