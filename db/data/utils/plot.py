@@ -77,8 +77,6 @@ class PlotSymbol:
         ts = pd.Series([float(x) for x in df[key]], index=df['price_date'])
         vs = pd.Series([float(x) for x in df['volume']], index=df['price_date'])
 
-        #import pdb
-        #pdb.set_trace()
 
         # get figures and sizes
         fig = plt.figure(oticker+ma_type, figsize=(16,15))
@@ -128,6 +126,7 @@ class PlotSymbol:
         ax1.set_ylabel('{0:s} ({1:s})'.format(name(key), currency), fontproperties=font_prop, size=16)
 
         # set axis ticks
+        plt.setp(ax1.get_xticklabels(), visible=False)
         ax1.set_yticklabels(ax1.get_yticks(), fontproperties=font_prop)
 
         # turn grid on
@@ -192,4 +191,4 @@ class PlotSymbol:
         ax2.yaxis.set_major_locator(MaxNLocator(prune='upper')) # remove last tick label
 
         # remove horizontal space between subplots
-        fig.subplots_adjust(hspace=0)
+        fig.subplots_adjust(hspace=0.001)
