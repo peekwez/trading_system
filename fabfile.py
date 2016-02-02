@@ -37,7 +37,6 @@ def make(target,option=''):
 @task
 def deploy(restart_servers=False):
     with settings(warn_only=True):
-        ssh_agent()
         git_push()
         if run("cd ~/{.pwd}".format(env)).failed:
             git_clone()
