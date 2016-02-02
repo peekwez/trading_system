@@ -48,4 +48,4 @@ def deploy(restart_servers=False):
         if restart_servers:
             with cd("~/{.pwd}/".format(env)):
                 make("stopall")
-                make("proccesses")
+                make("processes")
