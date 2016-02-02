@@ -47,4 +47,4 @@ def deploy(restart_servers=False):
         # if restart is True, restart supervisor tasks
         if restart_servers:
             make("stopall")
-            make("proccesses
+            make("proccesses")
