@@ -40,7 +40,7 @@ def deploy(restart=False):
         if run("cd ~/{.pwd}".format(env)).failed:
             git_clone()
         else:
-            run("pwd")
+            run("cd ~/{.pwd}".format(env))
             git_pull()
 
         # if restart is True, restart supervisor tasks
