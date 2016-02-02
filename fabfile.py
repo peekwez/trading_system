@@ -44,6 +44,7 @@ def deploy(restart=False):
             git_pull()
 
         # if restart is True, restart supervisor tasks
-        #if restart:
+        if restart:
+            run("pwd")
         #    make('stopall')
         #    make('processes')
