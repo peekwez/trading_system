@@ -48,6 +48,4 @@ def deploy(restart_servers=False):
         print restart_servers==False
         if restart_servers:
             print restart_servers==False
-            #run("pwd")
-        #    make('stopall')
-        #    make('processes')
+            run("pwd")
