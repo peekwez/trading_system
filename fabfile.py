@@ -33,9 +33,14 @@ def git_push():
 def make(target,option=''):
     run("make {0:s} {1:s}".format(target, option))
 
+def ssh_agent():
+    run("eval $(ssh-agent)")
+    run("ssh-add")
+
 @task
 def deploy(restart_servers=False):
     with settings(warn_only=True):
+        ssh_agent()
         git_push()
         if run("cd ~/{.pwd}".format(env)).failed:
             git_clone()
