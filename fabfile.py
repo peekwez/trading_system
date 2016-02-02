@@ -30,12 +30,10 @@ def git_pull():
 def git_push():
     local("git push origin {.branch}".format(env))
 
-def make(target,option=''):
-    run("make {0:s} {1:s}".format(target, option))
 
 
 @task
-def deploy(restart_servers=False):
+def deploy():
     with settings(warn_only=True):
         git_push()
         if run("cd ~/{.pwd}".format(env)).failed:
@@ -43,10 +41,3 @@ def deploy(restart_servers=False):
         else:
             with cd("~/{.pwd}/".format(env)):
                 git_pull()
-
-        # if restart is True, restart supervisor tasks
-        if restart_servers:
-            with cd("~/{.pwd}/".format(env)):
-                run("pwd")
-                run("make stopall")
-                run("make processes")
