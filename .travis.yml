@@ -7,6 +7,6 @@ before_install:
   - sudo apt-get install -y python-dev libpq-dev libssl-dev 
   - sudo apt-get install -y postgresql-client libxml2-dev
   - sudo apt-get install -y libgraphviz-dev libopenblas-dev liblapack-dev
-  - sudo apt-get build-dep python-matplotlib
+  - sudo apt-get build-dep --fix-missing python-matplotlib
 install: "sudo pip install -r requirements.txt"
 script: make test_systems
