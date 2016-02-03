@@ -30,6 +30,9 @@ help:
 	@echo " shellplus         Start Django shell using ipython"
 	@echo ""
 
+test_systems:
+	py.test -vv --cov=systems systems/
+
 setup: docker-services database process-logs
 
 

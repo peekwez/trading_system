@@ -30,8 +30,6 @@ def git_pull():
 def git_push():
     local("git push origin {.branch}".format(env))
 
-
-
 @task
 def deploy():
     with settings(warn_only=True):
