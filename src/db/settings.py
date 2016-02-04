@@ -166,6 +166,9 @@ SHELL_PLUS_POST_IMPORTS = (
                     'add_historical_prices', 'add_prices_for_tickers',
                     'create_exchanges',)),
     ('data.utils', ('prices', 'symbols', 'exchanges', 'misc', 'plot')),
+    ('systems.bitops', ('btest', 'ibset','ibclr')),
+    ('systems.randomsys', ('RandomSystem')),
+
 )
 
 NOTEBOOK_ARGUMENTS = [

@@ -137,7 +137,7 @@ shellplus:
 # tree
 tree:
 	$(call _info, Showing directory structure for project)
-	tree -I '*.pyc|logs|static|*.pid|*schedule|*.png|00*|__pycache|'
+	tree -I '*.pyc|*pycache*|logs|static|secrets*|*.pid|*schedule|*.png|00*'
 
 # collect statis files into static folder
 collectstatic:
