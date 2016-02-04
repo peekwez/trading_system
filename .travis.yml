@@ -1,28 +1,28 @@
 addons:
   apt:
+    sources:
+    - ubuntu-toolchain-r-test
     packages:
-      - cmake
-      - time
-      - build-essential
-      - gcc-4.9
-      - g++-4.9
-      - gfortran
-      - libatlas-dev
-      - libpq-dev
-      - libssl-dev
-      - postgresql-client
-      - libxml2-dev
-      - libgraphviz-dev
-      - libopenblas-dev
-      - liblapack-dev
-      - python-dev 
-      - python-setuptools
-      - python-matplotlib
-      - python-scipy
+    - cmake
+    - time
+    - build-essential
+    - gcc-4.8
+    - g++-4.8
+    - gfortran
+    - libatlas-dev
+    - libpq-dev
+    - libssl-dev
+    - postgresql-client
+    - libxml2-dev
+    - libgraphviz-dev
+    - libopenblas-dev
+    - liblapack-dev
+    - python-dev 
+    - python-setuptools
+    - python-matplotlib
+    - python-scipy
 langauge: python
 python:
   - "2.7"
-install: 
-  - "pip install --user --upgrade pip"
-  - "pip install --user -r requirements.txt"
+install: "pip install --user -r requirements.txt"
 script: make test_systems
