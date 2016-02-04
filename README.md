@@ -129,7 +129,15 @@ Use the command below to see the options available for Makefile
 
 ### File Structure
 ```
-├── db
+├── docker-compose.yml
+├── fabfile.py
+├── Makefile
+├── Makefile.in
+├── monaco.ttf
+├── README.md
+├── requirements.txt
+├── setup.cfg
+├── src
 │   ├── data
 │   │   ├── admin.py
 │   │   ├── __init__.py
@@ -152,13 +160,14 @@ Use the command below to see the options available for Makefile
 │   │   ├── settings.py
 │   │   ├── urls.py
 │   │   └── wsgi.py
-│   └── manage.py
-├── docker-compose.yml
-├── Makefile
-├── Makefile.in
-├── monaco.ttf
-├── README.md
-├── requirements.txt
-├── supervisord.conf
-└── testplots.ipynb
+│   ├── manage.py
+│   └── systems
+│       ├── bitops.py
+│       ├── commonsys.py
+│       ├── __init__.py
+│       ├── randomsys.py
+│       └── tests
+│           ├── __init__.py
+│           └── test_bitops.py
+└── supervisord.conf
 ```

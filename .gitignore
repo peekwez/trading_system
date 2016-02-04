@@ -7,6 +7,8 @@
 logs
 *.pid
 *-schedule
+*.ipynb
+nginx.conf
 .ipynb_checkpoints/
 secrets.txt
 static/
