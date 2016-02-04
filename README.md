@@ -1,6 +1,6 @@
 # Kapp Consulting - Trading System
 ---
-## **System Dependencies**
+## **System Dependencies (Ubuntu 14.04)**
 Install the following system dependencies
 
 * [pip](https://pip.pypa.io/en/stable/installing/)
@@ -14,11 +14,20 @@ Install the following system dependencies
 
 ### Clone Repository.
 * `$ git clone git@github.com:<peekwez>/trading_system.git`
+
 * `$ cd trading_system`
 
 ### Install Application Dependencies
+copy and paste the lines below to install the following dependencies
+
+* `$ sudo apt-get install -y build-essential gfortran gcc libatlas-base-dev  curl git python-dev libpq-dev libssl-dev postgresql-client libxml2-dev libxsltl-dev libgraphviz-dev libopenblas-dev liblapack-dev`
+
+* `$ sudo apt-get build-dep python-matplotlib`
+
 * `$ pip install -r requirements.txt`
+
 * `$ npm install -g redis-commander`
+
 
 ## **Setup Instructions**
 
@@ -35,19 +44,17 @@ The above command performs the following tasks
 
 ### Supervisor Processes
 * `$ make processes`
+
 * `$ make status` -- check if processes are up and running
 
 The following process are started in the background by supervisor
 * `celery worker`
 * `celery beat`
+* `django development server`  - the `admin` page is at [http://localhost:8000/admin](http://localhost:8000/admin)
 * `celery flower` at [http://localhost:8001](http://localhost:8001)
 * `ipython notebook` at [http://localhost:8002](http://localhost:8002) with a `Django Shell-Plus` kernel
 * `redis-commander` at [http://localhost:8003](http://localhost:8003)
 
-### Django Server
-* `$ make runserver`
-
-Starts Django's development server. The `admin` page can is located at [http://localhost:8000/admin](http://localhost:8000/admin).
 
 ### Populating Database
 * log in to the [Admin Page](http://localhost:8000/admin) and add the following information for **Yahoo** to the **Data Vendor table**
@@ -79,14 +86,14 @@ Starts Django's development server. The `admin` page can is located at [http://l
 ## **After System Restart/Reboot**
 `cd` into application directory and execute the following commands
 * `$ make docker-services`
+
 * `$ make processes`
-* `$ make runserver`
 
 ## **Miscellaneous**
 ### Sample Python Script
 This script can be run in [`ipython notebook`](http://localhost:8002) to generate a
-simple and/or exponential moving average for all tickers whose value is **$2.5**
-for the specified date
+simple and/or exponential moving average for all tickers whose value is less
+or equal to **$2.5** on the specified date
 
 ```python
 # -*- coding: utf-8 -*-

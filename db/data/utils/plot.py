@@ -70,11 +70,13 @@ class PlotSymbol:
         symbol = self.symbols.get(ticker=ticker)
         company = symbol.name
         oticker = symbol.oticker
+        currency = symbol.currency
 
         # create panda data frame and time series
         df = pd.DataFrame.from_records(prices)
         ts = pd.Series([float(x) for x in df[key]], index=df['price_date'])
         vs = pd.Series([float(x) for x in df['volume']], index=df['price_date'])
+
 
         # get figures and sizes
         fig = plt.figure(oticker+ma_type, figsize=(16,15))
@@ -91,6 +93,7 @@ class PlotSymbol:
 
         # add fill to plot
         ax1.fill_between(ts.index, ts.values, facecolor=pcolors.FILL, alpha=0.9)
+
 
         # add moving averages
         ma_keys = ['MA_5', 'MA_10', 'MA_20', 'MA_30', 'MA_40', 'MA_50', 'MA_60']
@@ -120,11 +123,10 @@ class PlotSymbol:
 
         # set axis labels
         ax1.set_xlabel('Date', fontproperties=font_prop, size=16)
-        ax1.set_ylabel('{0:s}'.format(name(key)), fontproperties=font_prop, size=16)
+        ax1.set_ylabel('{0:s} ({1:s})'.format(name(key), currency), fontproperties=font_prop, size=16)
 
         # set axis ticks
-        for label in ax1.get_xticklabels():
-            label.set_fontproperties(font_prop)
+        plt.setp(ax1.get_xticklabels(), visible=False)
         ax1.set_yticklabels(ax1.get_yticks(), fontproperties=font_prop)
 
         # turn grid on
@@ -140,10 +142,20 @@ class PlotSymbol:
         ymin = ts.min()
         ax1.set_ylim([floor(ymin), max(ymax, floor(ymax)+0.5)])
 
-        # add legends
+        # get plot end values and add legends
         legs = ax1.legend(frameon=False, fontsize=18, loc='best', prop=font_prop)
-        for leg in legs.legendHandles:
-            leg.set_linewidth(4.0)
+        lines = ax1.lines
+
+        texts = legs.get_texts()
+        handles = legs.legendHandles
+        for k, line in enumerate(lines):
+            value = line.get_ydata()[-1]
+            text  = texts[k].get_text()
+            label = '{0:6s} - {1:0.2f} {2:s}'.format(text,value,currency)
+
+            # set new values and labels
+            handles[k].set_linewidth(4.0)
+            texts[k].set_text(label)
 
         # add title for this plot
         ax1.set_title(
@@ -179,4 +191,4 @@ class PlotSymbol:
         ax2.yaxis.set_major_locator(MaxNLocator(prune='upper')) # remove last tick label
 
         # remove horizontal space between subplots
-        fig.subplots_adjust(hspace=0)
+        fig.subplots_adjust(hspace=0.001)

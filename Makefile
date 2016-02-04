@@ -30,6 +30,9 @@ help:
 	@echo " shellplus         Start Django shell using ipython"
 	@echo ""
 
+test_systems:
+	py.test -vv --cov=systems systems/
+
 setup: docker-services database process-logs
 
 
@@ -38,7 +41,7 @@ process-logs:
 	cd db/; mkdir logs; cd logs/; \
 	touch supervisord.log celery-worker.log \
 	celery-beat.log flower.log notebook.log \
-	redis.log
+	redis.log server.log
 
 docker-services:
 	$(call _info, Starting postgres and redis docker containers)
@@ -50,7 +53,7 @@ celery-flower:
 
 ipython-notebook:
 	$(call _info, Starting ipython notebook on port 8002)
-	./db/manage.py shel_lplus --notebook #./db/manage.py ipython notebook --port=8002
+	./db/manage.py shell_plus --notebook
 
 redis-commander:
 	$(call _info, Starting redis-commander web client on port 8003)
@@ -67,6 +70,8 @@ celery-beat:
 processes:
 	$(call _info, Starting supervisord processes)
 	supervisord -c supervisord.conf
+	sleep 5
+	supervisorctl restart web-client:flower
 
 restart:
 	$(call _info, Restarting $(process) supervisord processes)
@@ -74,6 +79,7 @@ restart:
 
 restartall:
 	$(call _info, Restarting all supervisord processes)
+	supervisorctl restart web-client:server
 	supervisorctl restart db-celery:db-worker
 	supervisorctl restart db-celery:db-beat
 	supervisorctl restart web-client:flower
@@ -81,11 +87,9 @@ restartall:
 	supervisorctl restart web-client:redis
 status:
 	$(call _info, Checking status of supervisord processes)
-	supervisorctl status db-celery:db-worker
-	supervisorctl status db-celery:db-beat
-	supervisorctl status web-client:flower
-	supervisorctl status web-client:notebook
-	supervisorctl status web-client:redis
+	supervisorctl status db-celery:*
+	supervisorctl status web-client:*
+
 
 stopall:
 	$(call _info, Stoping all supervisord processes)
@@ -134,3 +138,11 @@ shellplus:
 tree:
 	$(call _info, Showing directory structure for project)
 	tree -I '*.pyc|logs|*.pid|*schedule|*.png|00*'
+
+# collect statis files into static folder
+collectstatic:
+	$(call _info, Collecting static files)
+	./db/manage.py collectstatic --noinput
+	cp -r ${IPYTHON_STATIC}/* db/static/
+	cp -r ${REDIS_STATIC}/* db/static/
+	cp -r ${FLOWER_STATIC}/* db/static/

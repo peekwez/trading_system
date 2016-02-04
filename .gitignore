@@ -9,3 +9,7 @@ logs
 *-schedule
 .ipynb_checkpoints/
 secrets.txt
+static/
+__pycache__/*
+.cache
+.coverage

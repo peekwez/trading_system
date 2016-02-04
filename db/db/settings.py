@@ -118,14 +118,18 @@ CELERYBEAT_SCHEDULE = {
     },
     'add-historical-prices-once-a-year': {
         'task': 'data.tasks.add_historical_prices',
-        'schedule': crontab(day_of_week='mon',
+        'schedule': crontab(minute='30',
+                            hour='10',
+                            day_of_week='mon',
                             day_of_month='1-7',
                             month_of_year='1'),
         'args': (),
     },
     'update-symbols-once-a-month': {
-        'task': 'data.tasks.update_security_symbols',
-        'schedule': crontab(day_of_week='mon',
+        'task': 'data.tasks.update_securities_symbols',
+        'schedule': crontab(minute='30',
+                            hour='10',
+                            day_of_week='mon',
                             day_of_month='1-7',
                             month_of_year='*/1'),
         'args': (),
@@ -150,6 +154,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR,'static')
 
 GRAPH_MODELS = {
     'all_applications': True,
@@ -164,5 +169,6 @@ SHELL_PLUS_POST_IMPORTS = (
 )
 
 NOTEBOOK_ARGUMENTS = [
+    '--ip=0.0.0.0',
     '--port=8002',
 ]
