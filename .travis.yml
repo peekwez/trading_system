@@ -8,12 +8,6 @@ addons:
       - g++-4.8
       - gfortran
       - libatlas-dev
-      - libatlas-dev-base
-      - libatlas3gf-base
-      - python-dev 
-      - python-setuptools
-      - python-numpy
-      - python-scipy
       - libpq-dev
       - libssl-dev
       - postgresql-client
@@ -21,6 +15,10 @@ addons:
       - libgraphviz-dev
       - libopenblas-dev
       - liblapack-dev
+      - python-dev 
+      - python-setuptools
+      - python-matplotlib
+      - python-scipy
 langauge: python
 python:
   - "2.7"
