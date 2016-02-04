@@ -31,14 +31,14 @@ help:
 	@echo ""
 
 test_systems:
-	py.test -vv --cov=systems systems/
+	py.test -vv --cov-config=setup.cfg --cov=src src
 
 setup: docker-services database process-logs
 
 
 process-logs:
 	$(call _info, Creating logs files)
-	cd db/; mkdir logs; cd logs/; \
+	cd src/; mkdir logs; cd logs/; \
 	touch supervisord.log celery-worker.log \
 	celery-beat.log flower.log notebook.log \
 	redis.log server.log
@@ -53,7 +53,7 @@ celery-flower:
 
 ipython-notebook:
 	$(call _info, Starting ipython notebook on port 8002)
-	./db/manage.py shell_plus --notebook
+	./src/manage.py shell_plus --notebook
 
 redis-commander:
 	$(call _info, Starting redis-commander web client on port 8003)
@@ -107,42 +107,42 @@ createdb:
 # migrate db changes
 migrate:
 	$(call _info, Migrating Django app to database)
-	./db/manage.py migrate
+	./src/manage.py migrate
 
 # make migrations
 makemigrations:
 	$(call _info, Creating new database migrations)
-	./db/manage.py makemigrations
+	./src/manage.py makemigrations
 
 # create superuser
 createsu:
 	$(call _info, Creating superuser for Django app)
-	./db/manage.py createsuperuser
+	./src/manage.py createsuperuser
 
 # visualize models
 graphmodels:
 	$(call _info, Graphing Django app models)
-	./db/manage.py graph_models --pygraphviz -a -g -o graphed_models.png
+	./src/manage.py graph_models --pygraphviz -a -g -o graphed_models.png
 
 # start server
 runserverplus:
 	$(call _info, Start server with Werkzeug debugger)
-	./db/manage.py runserver_plus
+	./src/manage.py runserver_plus
 
 # shell_plus
 shellplus:
 	$(call _info, Starting ipython shell with notebook plugin)
-	./db/manage.py shell_plus --$(option)
+	./src/manage.py shell_plus --$(option)
 
 # tree
 tree:
 	$(call _info, Showing directory structure for project)
-	tree -I '*.pyc|logs|*.pid|*schedule|*.png|00*'
+	tree -I '*.pyc|logs|static|*.pid|*schedule|*.png|00*|__pycache|'
 
 # collect statis files into static folder
 collectstatic:
 	$(call _info, Collecting static files)
-	./db/manage.py collectstatic --noinput
-	cp -r ${IPYTHON_STATIC}/* db/static/
-	cp -r ${REDIS_STATIC}/* db/static/
-	cp -r ${FLOWER_STATIC}/* db/static/
+	./src/manage.py collectstatic --noinput
+	cp -r ${IPYTHON_STATIC}/* src/static/
+	cp -r ${REDIS_STATIC}/* src/static/
+	cp -r ${FLOWER_STATIC}/* src/static/
