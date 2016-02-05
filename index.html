@@ -54,7 +54,7 @@ $ cd trading_system
 <h3>
 <a id="install-application-dependencies" class="anchor" href="#install-application-dependencies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install Application Dependencies</h3>
 
-<p>copy and paste the lines below to install the following dependencies</p>
+<p>Copy and paste the lines below to install the following dependencies</p>
 
 <pre><code>$ sudo apt-get install -y build-essential gfortran gcc libatlas-base-dev  curl git python-dev libpq-dev libssl-dev postgresql-client libxml2-dev libxsltl-dev libgraphviz-dev libopenblas-dev liblapack-dev
 $ sudo apt-get build-dep python-matplotlib
@@ -72,12 +72,12 @@ $ npm install -g redis-commander
 <pre><code>$ make setup
 </code></pre>
 
-<p>The above command performs the following tasks</p>
+<p>the command chains several commands to</p>
 
 <ul>
-<li><p>starts <code>postgres:9.4.1</code> and <code>redis:2.8</code> services using <code>docker-compose</code>. The <code>postgres</code> container's port <code>5432/tcp</code> is linked to port <code>5431</code> on the local machine while the <code>redis</code> container's port <code>6379/tcp</code> is linked to port <code>6378</code> on the local machine</p></li>
-<li><p>creates a database called <code>securities_master</code> and a Django admin superuser for the application. The superuser is created through a shell prompt</p></li>
-<li><p>creates log files in <code>trading_system/db/logs/</code> for all the supervisor processes</p></li>
+<li><p>start a <code>postgres</code> and <code>redis</code> docker containers using <code>postgres:9.4.1</code> and <code>redis:2.8</code> images respectively. <code>docker-compose</code> is used to start the services. <code>postgres'</code> port <code>5432/tcp</code> is linked to port <code>5431</code> on the local machine, while <code>redis'</code> port <code>6379/tcp</code> is linked to port <code>6378</code> on the local machine. <code>redis</code> is started to serve as a broker for <code>celery</code></p></li>
+<li><p>create a database called <code>securities_master</code> and a <code>Django</code> <strong>admin</strong> superuser for the application. The shell will prompt you to create the superuser login credentials</p></li>
+<li><p>create a <code>logs</code> directory in <code>trading_system/src/</code> and log files for all the supervisor processes inside the <code>logs</code> directory</p></li>
 </ul>
 
 <h3>
@@ -87,21 +87,24 @@ $ npm install -g redis-commander
 $ make status  # (Check if processes are up and running)
 </code></pre>
 
-<p>The following process are started in the background by supervisor</p>
+<p>the first command starts the following processes as a daemon</p>
 
 <ul>
-<li><code>celery worker</code></li>
-<li><code>celery beat</code></li>
 <li>
-<code>django development server</code>  - the <code>admin</code> page is at <a href="http://localhost:8000/admin">http://localhost:8000/admin</a>
+<code>celery worker</code> - a task queue for real-time processing</li>
+<li>
+<code>celery beat</code> -  a task scheduler</li>
+<li>
+<code>Django development server</code>  - the <strong>admin</strong> page is at <a href="http://localhost:8000/admin">http://localhost:8000/admin</a>
 </li>
 <li>
-<code>celery flower</code> at <a href="http://localhost:8001">http://localhost:8001</a>
+<code>celery flower</code> - web client for monitoring <code>celery-worker</code><a href="http://localhost:8001">http://localhost:8001</a>
 </li>
 <li>
-<code>ipython notebook</code> at <a href="http://localhost:8002">http://localhost:8002</a> with a <code>Django Shell-Plus</code> kernel</li>
+<code>ipython notebook</code> - for python scripting; modules are imported using the <code>Django Shell-Plus</code> kernel <a href="http://localhost:8002">http://localhost:8002</a>
+</li>
 <li>
-<code>redis-commander</code> at <a href="http://localhost:8003">http://localhost:8003</a>
+<code>redis-commander</code> web client for <code>redis</code> <a href="http://localhost:8003">http://localhost:8003</a>
 </li>
 </ul>
 
@@ -119,7 +122,7 @@ Support email = support@yahoo.com
 </code></pre>
 </li>
 <li>
-<p>execute the <em>celery</em> tasks inside an <a href="http://localhost:8002"><code>ipython notebook</code></a> cell using the <code>Django Shell-Plus</code> kernel</p>
+<p>execute the <code>celery</code> tasks inside an <a href="http://localhost:8002"><code>ipython notebook</code></a> cell using the <code>Django Shell-Plus</code> kernel</p>
 
 <div class="highlight highlight-source-python"><pre>create_exchanges.delay() <span class="pl-c"># adds TSX, TSXV, NASDAQ and NYSE exchanges to database</span>
 update_securities_symbols.delay() <span class="pl-c"># adds S&amp;P500 and S&amp;P/TSX tickers to database</span>
@@ -135,7 +138,7 @@ add_historical_prices.delay() <span class="pl-c"># adds daily prices from Jan 01
 <li>
 <p>update the historical prices for the added tickers by executing the following commands inside a cell in the <a href="http://localhost:8002"><code>ipython notebook</code></a> using the <code>Django Shell-Plus</code> kernel</p>
 
-<div class="highlight highlight-source-python"><pre>add_prices_for_tickers.delay(<span class="pl-v">tickers</span><span class="pl-k">=</span>[<span class="pl-s"><span class="pl-pds">'</span>tk1<span class="pl-pds">'</span></span>,<span class="pl-s"><span class="pl-pds">'</span>tk2<span class="pl-pds">'</span></span>,<span class="pl-s"><span class="pl-pds">'</span>...<span class="pl-pds">'</span></span>])</pre></div>
+<div class="highlight highlight-source-python"><pre>add_prices_for_tickers.delay(<span class="pl-v">tickers</span><span class="pl-k">=</span>[<span class="pl-s"><span class="pl-pds">'</span>AAPL<span class="pl-pds">'</span></span>,<span class="pl-s"><span class="pl-pds">'</span>BBD-B.TO,<span class="pl-pds">'</span></span><span class="pl-c1">...</span><span class="pl-s"><span class="pl-pds">'</span>])<span class="pl-ii"></span></span></pre></div>
 </li>
 </ul>
 
@@ -144,7 +147,7 @@ add_historical_prices.delay() <span class="pl-c"># adds daily prices from Jan 01
 
 <ul>
 <li>
-<code>update_prices</code> <em>celery</em> task is executed every 10 minutes between 9am-6pm during the weekdays using <code>celery-beat</code> as the scheduler and the <code>celery-worker</code> as the task queue. <em>Redis</em> is used as the <em>celery</em> broker.</li>
+<code>update_prices</code> task is executed every 10 minutes between 9am-6pm during the weekdays using <code>celery-beat</code> as the scheduler and the <code>celery-worker</code> as the task queue.</li>
 </ul>
 
 <h2>
@@ -164,9 +167,7 @@ $ make processes
 <h3>
 <a id="sample-python-script" class="anchor" href="#sample-python-script" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sample Python Script</h3>
 
-<p>This script can be run in <a href="http://localhost:8002"><code>ipython notebook</code></a> to generate a
-simple and/or exponential moving average for all tickers whose value is less
-or equal to <strong>$2.5</strong> on the specified date</p>
+<p>Open this script using <a href="http://localhost:8002"><code>ipython notebook</code></a> to generate a simple and/or exponential moving average for all tickers whose <strong>close value</strong> is less or equal to <strong>$2.5</strong> on date specified</p>
 
 <div class="highlight highlight-source-python"><pre><span class="pl-c"># -*- coding: utf-8 -*-</span>
 
@@ -174,11 +175,11 @@ or equal to <strong>$2.5</strong> on the specified date</p>
 <span class="pl-k">from</span> datetime <span class="pl-k">import</span> date, timedelta
 
 
-<span class="pl-c"># turn matplotlib inline and save figs as pdfs or svg</span>
+<span class="pl-c"># turn on matplotlib inline and save figs as pdfs or svg</span>
 get_ipython().magic(<span class="pl-s"><span class="pl-k">u</span><span class="pl-pds">'</span>matplotlib inline<span class="pl-pds">'</span></span>)
 get_ipython().magic(<span class="pl-s"><span class="pl-k">u</span><span class="pl-pds">"</span>config InlineBackend.figure_format = 'svg'<span class="pl-pds">"</span></span>)
 
-<span class="pl-c"># fetch daily prices for tickers</span>
+<span class="pl-c"># fetch daily prices for ticker(s)</span>
 today <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>2016-01-29<span class="pl-pds">'</span></span> <span class="pl-c"># date.today()</span>
 tickers <span class="pl-k">=</span> DailyPrice.objects.filter(<span class="pl-v">close_price__lte</span><span class="pl-k">=</span><span class="pl-c1">2.5</span>, <span class="pl-v">price_date</span><span class="pl-k">=</span>today).values_list(<span class="pl-s"><span class="pl-pds">'</span>symbol__ticker<span class="pl-pds">'</span></span>, <span class="pl-v">flat</span><span class="pl-k">=</span><span class="pl-c1">True</span>)
 
@@ -187,7 +188,7 @@ tickers <span class="pl-k">=</span> DailyPrice.objects.filter(<span class="pl-v"
 start_date <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>2015-01-01<span class="pl-pds">'</span></span>
 end_date <span class="pl-k">=</span> today
 
-<span class="pl-c"># initialized plot class</span>
+<span class="pl-c"># initialize plot class</span>
 p <span class="pl-k">=</span> plot.PlotSymbol(tickers)
 
 <span class="pl-c"># plot a simple moving average using pandas</span>
@@ -210,7 +211,6 @@ p.plot(<span class="pl-v">ma_type</span><span class="pl-k">=</span>ma_type, <spa
 ├── Makefile
 ├── Makefile.in
 ├── monaco.ttf
-├── nginx.conf
 ├── README.md
 ├── requirements.txt
 ├── setup.cfg
@@ -220,7 +220,7 @@ p.plot(<span class="pl-v">ma_type</span><span class="pl-k">=</span>ma_type, <spa
 │   │   ├── __init__.py
 │   │   ├── migrations
 │   │   │   └── __init__.py
-│   │   ├── models.py
+│   │   ├── models.py├── nginx.conf
 │   │   ├── tasks.py
 │   │   ├── tests.py
 │   │   ├── utils
