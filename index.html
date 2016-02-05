@@ -122,7 +122,7 @@ Support email = support@yahoo.com
 </code></pre>
 </li>
 <li>
-<p>execute the <code>celery</code> tasks inside an <a href="http://localhost:8002"><code>ipython notebook</code></a> cell using the <code>Django Shell-Plus</code> kernel</p>
+<p>execute the <code>celery</code> tasks using <a href="http://localhost:8002"><code>ipython notebook</code></a> with the <code>Django Shell-Plus</code> kernel</p>
 
 <div class="highlight highlight-source-python"><pre>create_exchanges.delay() <span class="pl-c"># adds TSX, TSXV, NASDAQ and NYSE exchanges to database</span>
 update_securities_symbols.delay() <span class="pl-c"># adds S&amp;P500 and S&amp;P/TSX tickers to database</span>
@@ -167,33 +167,62 @@ $ make processes
 <h3>
 <a id="sample-python-script" class="anchor" href="#sample-python-script" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sample Python Script</h3>
 
-<p>Open this script using <a href="http://localhost:8002"><code>ipython notebook</code></a> to generate a simple and/or exponential moving average for all tickers whose <strong>close value</strong> is less or equal to <strong>$2.5</strong> on date specified</p>
+<p>The test script below uses <a href="http://localhost:8002"><code>ipython notebook</code></a> to generate a simple and/or exponential moving average for the lowest three tickers whose <strong>close value</strong> is less or equal to <strong>$2.5</strong> as of today. The second part of the script performs a backward and forward testing for the selected tickers using a <strong>coin flip</strong> day trading strategy(<strong>short</strong>=1, <strong>long</strong>=1).</p>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-c"># -*- coding: utf-8 -*-</span>
-
-<span class="pl-k">from</span> __future__ <span class="pl-k">import</span> absolute_import
-<span class="pl-k">from</span> datetime <span class="pl-k">import</span> date, timedelta
-
-
-<span class="pl-c"># turn on matplotlib inline and save figs as pdfs or svg</span>
-get_ipython().magic(<span class="pl-s"><span class="pl-k">u</span><span class="pl-pds">'</span>matplotlib inline<span class="pl-pds">'</span></span>)
-get_ipython().magic(<span class="pl-s"><span class="pl-k">u</span><span class="pl-pds">"</span>config InlineBackend.figure_format = 'svg'<span class="pl-pds">"</span></span>)
-
-<span class="pl-c"># fetch daily prices for ticker(s)</span>
-today <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>2016-01-29<span class="pl-pds">'</span></span> <span class="pl-c"># date.today()</span>
-tickers <span class="pl-k">=</span> DailyPrice.objects.filter(<span class="pl-v">close_price__lte</span><span class="pl-k">=</span><span class="pl-c1">2.5</span>, <span class="pl-v">price_date</span><span class="pl-k">=</span>today).values_list(<span class="pl-s"><span class="pl-pds">'</span>symbol__ticker<span class="pl-pds">'</span></span>, <span class="pl-v">flat</span><span class="pl-k">=</span><span class="pl-c1">True</span>)
+<div class="highlight highlight-source-python"><pre>    <span class="pl-c"># -*- coding: utf-8 -*-</span>
+    <span class="pl-k">from</span> __future__ <span class="pl-k">import</span> absolute_import
+    <span class="pl-k">from</span> datetime <span class="pl-k">import</span> date, timedelta
 
 
-<span class="pl-c"># set start and end dates</span>
-start_date <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>2015-01-01<span class="pl-pds">'</span></span>
-end_date <span class="pl-k">=</span> today
+    <span class="pl-c"># turn matplotlib inline and asave figs as pdfs or svg</span>
+    get_ipython().magic(<span class="pl-s"><span class="pl-k">u</span><span class="pl-pds">'</span>matplotlib inline<span class="pl-pds">'</span></span>)
+    get_ipython().magic(<span class="pl-s"><span class="pl-k">u</span><span class="pl-pds">"</span>config InlineBackend.figure_format = 'svg'<span class="pl-pds">"</span></span>)
 
-<span class="pl-c"># initialize plot class</span>
-p <span class="pl-k">=</span> plot.PlotSymbol(tickers)
 
-<span class="pl-c"># plot a simple moving average using pandas</span>
-ma_type <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>simple<span class="pl-pds">'</span></span> <span class="pl-c"># 'exponential' is another option</span>
-p.plot(<span class="pl-v">ma_type</span><span class="pl-k">=</span>ma_type, <span class="pl-v">start_date</span><span class="pl-k">=</span>start_date, <span class="pl-v">end_date</span><span class="pl-k">=</span>end_date)</pre></div>
+    <span class="pl-c"># fetch daily prices for tickers of interest</span>
+    today <span class="pl-k">=</span> date.today().strftime(<span class="pl-s"><span class="pl-pds">'</span>%Y-%m-<span class="pl-c1">%d</span><span class="pl-pds">'</span></span>)
+    tickers <span class="pl-k">=</span> DailyPrice.objects.filter(
+        <span class="pl-v">close_price__lte</span><span class="pl-k">=</span><span class="pl-c1">3</span>.,
+        <span class="pl-v">price_date</span><span class="pl-k">=</span>today).order_by(<span class="pl-s"><span class="pl-pds">'</span>close_price<span class="pl-pds">'</span></span>).values_list(
+        <span class="pl-s"><span class="pl-pds">'</span>symbol__ticker<span class="pl-pds">'</span></span>,
+        <span class="pl-v">flat</span><span class="pl-k">=</span><span class="pl-c1">True</span>)[:<span class="pl-c1">3</span>]
+
+
+    <span class="pl-c"># Plot Close Price and Moving Averages for Specific Tickers</span>
+
+    <span class="pl-c"># initialize plot function</span>
+    te <span class="pl-k">=</span> plot.PlotSymbol(tickers)
+
+    <span class="pl-c"># set start and end dates</span>
+    start_date <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>2015-01-01<span class="pl-pds">'</span></span>
+    end_date <span class="pl-k">=</span> today
+
+    <span class="pl-c"># plot data with simple moving averages</span>
+    ma_type <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>simple<span class="pl-pds">'</span></span>
+    te.plot(<span class="pl-v">ma_type</span><span class="pl-k">=</span>ma_type, <span class="pl-v">start_date</span><span class="pl-k">=</span>start_date, <span class="pl-v">end_date</span><span class="pl-k">=</span>end_date)
+
+
+    <span class="pl-c"># Trading Strategy Simulations</span>
+
+    <span class="pl-c"># import random</span>
+    <span class="pl-k">import</span> random
+
+    <span class="pl-c"># initialize simulations for tickers</span>
+    mcs <span class="pl-k">=</span> []
+
+    <span class="pl-c"># initiliaze strategy</span>
+    strategy <span class="pl-k">=</span> RandomStrategy()
+
+    <span class="pl-c"># start simulation</span>
+    ptr <span class="pl-k">=</span> <span class="pl-c1">0</span>
+    <span class="pl-k">for</span> ticker <span class="pl-k">in</span> tickers:
+        random.seed()
+        mcs.append(MonteCarlo(strategy,ticker))
+
+        <span class="pl-c"># test strategy</span>
+        mcs[ptr].run_strategy()
+
+        ptr <span class="pl-k">+=</span> <span class="pl-c1">1</span></pre></div>
 
 <h3>
 <a id="makefile-help" class="anchor" href="#makefile-help" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Makefile Help</h3>
