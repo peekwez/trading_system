@@ -167,7 +167,8 @@ SHELL_PLUS_POST_IMPORTS = (
                     'create_exchanges',)),
     ('data.utils', ('prices', 'symbols', 'exchanges', 'misc', 'plot')),
     ('systems.bitops', ('btest', 'ibset','ibclr')),
-    ('systems.randomsys', ('RandomSystem')),
+    ('systems.strategies', ('BaseStrategy','RandomStrategy')),
+    ('systems.simulations', ('MonteCarlo')),
 
 )
 

@@ -7,7 +7,6 @@ import pandas as pd
 
 # import matplotlib
 import matplotlib as mpl
-mpl.use("TKagg")
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 from matplotlib import rc, gridspec
@@ -21,13 +20,12 @@ from data.utils.misc import pcolors
 from data.models import DailyPrice, Symbol
 
 # matplotlib settings
+mpl.use("TKagg")
 mpl.rcParams['ps.usedistiller']  = 'xpdf'
 mpl.rcParams['ps.distiller.res'] = 6000
-
 font_prop = fm.FontProperties(fname="monaco.ttf")
 font_prop.set_size(14)
 font_prop.set_weight(200)
-
 rc('legend', labelspacing=0.2, handleheight=1.)
 rc('savefig', format='pdf', dpi='400')
 rc('pdf', fonttype=3)
