@@ -13,26 +13,26 @@ Install the following system dependencies
 ## **Installation**
 
 ### Clone Repository.
-* `$ git clone git@github.com:<peekwez>/trading_system.git`
-
-* `$ cd trading_system`
+```
+$ git clone git@github.com:<peekwez>/trading_system.git
+$ cd trading_system
+```
 
 ### Install Application Dependencies
 copy and paste the lines below to install the following dependencies
-
-* `$ sudo apt-get install -y build-essential gfortran gcc libatlas-base-dev  curl git python-dev libpq-dev libssl-dev postgresql-client libxml2-dev libxsltl-dev libgraphviz-dev libopenblas-dev liblapack-dev`
-
-* `$ sudo apt-get build-dep python-matplotlib`
-
-* `$ pip install -r requirements.txt`
-
-* `$ npm install -g redis-commander`
-
+```
+$ sudo apt-get install -y build-essential gfortran gcc libatlas-base-dev  curl git python-dev libpq-dev libssl-dev postgresql-client libxml2-dev libxsltl-dev libgraphviz-dev libopenblas-dev liblapack-dev
+$ sudo apt-get build-dep python-matplotlib
+$ pip install -r requirements.txt
+$ npm install -g redis-commander
+```
 
 ## **Setup Instructions**
 
 ### Initial Setup
-* `$ make setup`
+```
+$ make setup
+```
 
 The above command performs the following tasks
 
@@ -43,9 +43,10 @@ The above command performs the following tasks
 * creates log files in `trading_system/db/logs/` for all the supervisor processes
 
 ### Supervisor Processes
-* `$ make processes`
-
-* `$ make status` -- check if processes are up and running
+```
+$ make processes
+$ make status  # (Check if processes are up and running)
+```
 
 The following process are started in the background by supervisor
 * `celery worker`
@@ -85,9 +86,10 @@ The following process are started in the background by supervisor
 
 ## **After System Restart/Reboot**
 `cd` into application directory and execute the following commands
-* `$ make docker-services`
-
-* `$ make processes`
+```
+$ make docker-services
+$ make processes
+```
 
 ## **Miscellaneous**
 ### Sample Python Script
@@ -125,7 +127,9 @@ p.plot(ma_type=ma_type, start_date=start_date, end_date=end_date)
 
 ### Makefile Help
 Use the command below to see the options available for Makefile
-* `$ make help`
+```
+$ make help
+```
 
 ### File Structure
 ```
