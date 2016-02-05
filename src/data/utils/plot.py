@@ -24,7 +24,7 @@ mpl.use("TKagg")
 mpl.rcParams['ps.usedistiller']  = 'xpdf'
 mpl.rcParams['ps.distiller.res'] = 6000
 font_prop = fm.FontProperties(fname="monaco.ttf")
-font_prop.set_size(14)
+font_prop.set_size(11)
 font_prop.set_weight(200)
 rc('legend', labelspacing=0.2, handleheight=1.)
 rc('savefig', format='pdf', dpi='400')
@@ -77,8 +77,8 @@ class PlotSymbol:
 
 
         # get figures and sizes
-        fig = plt.figure(oticker+ma_type, figsize=(16,15))
-        gs  = gridspec.GridSpec(2,1, height_ratios=[2,1])
+        fig = plt.figure(oticker+ma_type, figsize=(11,10))
+        gs  = gridspec.GridSpec(2,1, height_ratios=[5,3])
         ax1 = fig.add_subplot(gs[0])
         ax2 = fig.add_subplot(gs[1])
 
@@ -120,8 +120,8 @@ class PlotSymbol:
         name = lambda w: ' '.join(word.capitalize() for word in w.split('_'))
 
         # set axis labels
-        ax1.set_xlabel('Date', fontproperties=font_prop, size=16)
-        ax1.set_ylabel('{0:s} ({1:s})'.format(name(key), currency), fontproperties=font_prop, size=16)
+        ax1.set_xlabel('Date', fontproperties=font_prop, size=13)
+        ax1.set_ylabel('{0:s} ({1:s})'.format(name(key), currency), fontproperties=font_prop, size=13)
 
         # set axis ticks
         plt.setp(ax1.get_xticklabels(), visible=False)
@@ -141,7 +141,7 @@ class PlotSymbol:
         ax1.set_ylim([floor(ymin), max(ymax, floor(ymax)+0.5)])
 
         # get plot end values and add legends
-        legs = ax1.legend(frameon=False, fontsize=18, loc='best', prop=font_prop)
+        legs = ax1.legend(frameon=False, fontsize=13, loc='best', prop=font_prop)
         lines = ax1.lines
 
         texts = legs.get_texts()
@@ -162,7 +162,7 @@ class PlotSymbol:
                                                                 oticker,
                                                                 kwargs['price_date__gte'],
                                                                 kwargs['price_date__lte']),
-            fontproperties=font_prop, size=18)
+            fontproperties=font_prop, size=13)
 
         # ADD SUBPLOT OF VOLUME TRADED
         # ============================
@@ -171,10 +171,11 @@ class PlotSymbol:
         ax2.vlines(vs.index, [0], vs.values, color=pcolors.VLINE)
 
         # set axis labels
-        ax2.set_xlabel('Date', fontproperties=font_prop, size=16)
-        ax2.set_ylabel('Volume (in 1000 shares)', fontproperties=font_prop, size=16)
+        ax2.set_xlabel('Date', fontproperties=font_prop, size=13)
+        ax2.set_ylabel('Volume (in 1000 stocks)', fontproperties=font_prop, size=13)
 
         # set axis ticks
+        plt.xticks(rotation=75)
         for label in ax2.get_xticklabels():
             label.set_fontproperties(font_prop)
         ax2.set_yticklabels(ax2.get_yticks(), fontproperties=font_prop)

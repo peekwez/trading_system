@@ -74,14 +74,7 @@ class MonteCarlo:
     def set_signals(self):
         self.signals = smatrix(self.nrows,self.ncols,self.strategy)
 
-    def plot(self,figname):
-
-        # use colors for moving average chart
-        colors = [pcolors.SYMB]
-        ma_keys = ['MA_50', 'MA_10', 'MA_5', 'MA_40', 'MA_20', 'MA_30','MA_60']
-        for key in ma_keys:
-            colors.append(pcolors.MA[key])
-
+    def set_win_loss(self):
         # get data and top 4 gainers and lowest  4 losers
         df = pd.DataFrame(data=self.sample_val,
                           index=[i for i in range(self.nrows)],
@@ -90,12 +83,55 @@ class MonteCarlo:
         heads = df_sort.head(4).index.values
         tails = df_sort.tail(4).index.values
         samples = np.concatenate((heads,tails))
+        self.win_loss = samples
+
+    def set_prices(self):
+        tmp = DailyPrice.objects.filter(price_date__gte=self.start_date,
+                                              price_date__lte=self.end_date,
+                                              symbol__ticker=self.ticker,
+                                          ).order_by('price_date').values_list(
+                                              'open_price',
+                                              'close_price',
+                                              'price_date')
+        self.prices  = np.array(tmp)
+
+    def common_run(self):
+        self.mat = plmatrix(self.signals, self.prices)
+        self.daily_pl  = self.size*np.dot(self.mat,np.ones(self.ncols))
+        self.sample_val = self.capital + self.daily_pl
+
+    def backward_run(self):
+        self.common_run()
+        self.set_win_loss()
+        self.plot(figname='backward')
+
+    def forward_run(self):
+        self.end_date = '2015-12-31'
+        self.start_date = '2015-01-01'
+        self.set_prices()
+        self.prices = self.prices[:self.ncols]
+        self.common_run()
+        self.plot(figname='forward')
+
+    def run_strategy(self):
+        self.backward_run()
+        self.forward_run()
+
+    def plot(self,figname):
+
+        # use colors for moving average chart
+        colors = [pcolors.SYMB]
+        ma_keys = ['MA_50', 'MA_10', 'MA_5', 'MA_40', 'MA_20', 'MA_30','MA_60']
+        for key in ma_keys:
+            colors.append(pcolors.MA[key])
+
 
         dates = self.prices[:,2]
-        fig = plt.figure(figname + self.ticker, figsize=(10,7))
+        fig = plt.figure(figname + self.ticker, figsize=(11,7))
         gs  = gridspec.GridSpec(1,1)
         self.ax = fig.add_subplot(gs[0])
-        for i,k in enumerate(samples):
+
+        for i,k in enumerate(self.win_loss):
             # slice sample of interest
             data = self.size*(self.mat[k,:])
             wins = np.sum(data > 0)
@@ -128,7 +164,7 @@ class MonteCarlo:
                            fontproperties=font_prop, size=13)
 
         # set tick label font
-        plt.xticks(rotation=70)
+        plt.xticks(rotation=75)
         for label in self.ax.get_xticklabels():
             label.set_fontproperties(font_prop)
         self.ax.set_yticklabels(self.ax.get_yticks(), fontproperties=font_prop)
@@ -146,34 +182,3 @@ class MonteCarlo:
         # formatter for x- and y-axes
         ax_yfmt = FuncFormatter(lambda x, pos: '{0:d}'.format(int(x)))
         self.ax.yaxis.set_major_formatter(ax_yfmt)
-
-    def set_prices(self):
-        tmp = DailyPrice.objects.filter(price_date__gte=self.start_date,
-                                              price_date__lte=self.end_date,
-                                              symbol__ticker=self.ticker,
-                                          ).order_by('price_date').values_list(
-                                              'open_price',
-                                              'close_price',
-                                              'price_date')
-        self.prices  = np.array(tmp)
-
-    def common_run(self):
-        self.mat = plmatrix(self.signals, self.prices)
-        self.daily_pl  = self.size*np.dot(self.mat,np.ones(self.ncols))
-        self.sample_val = self.capital + self.daily_pl
-
-    def backward_run(self):
-        self.common_run()
-        self.plot(figname='backward')
-
-    def forward_run(self):
-        self.end_date = '2015-12-31'
-        self.start_date = '2015-01-01'
-        self.set_prices()
-        self.prices = self.prices[:self.ncols]
-        self.common_run()
-        self.plot(figname='forward')
-
-    def run_strategy(self):
-        self.backward_run()
-        self.forward_run()

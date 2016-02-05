@@ -39,3 +39,4 @@ def deploy():
         else:
             with cd("~/{.pwd}/".format(env)):
                 git_pull()
+        put("tests.ipynb","~/{.pwd}/".format(env))
