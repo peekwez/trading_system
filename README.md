@@ -1,4 +1,4 @@
-# Kapp Consulting - Trading System
+# Kapp Consulting - Trading System [![Build Status](https://travis-ci.com/peekwez/trading_system.svg?token=BnDQr5dc9iRq4pSqsjvc&branch=master)](https://travis-ci.com/peekwez/trading_system)
 ---
 ## **System Dependencies (Ubuntu 14.04)**
 Install the following system dependencies
