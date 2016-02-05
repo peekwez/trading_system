@@ -66,7 +66,7 @@ the first command starts the following processes as a daemon
   Support email = support@yahoo.com
   ```
 
-* execute the `celery` tasks inside an [`ipython notebook`](http://localhost:8002) cell using the `Django Shell-Plus` kernel
+* execute the `celery` tasks using [`ipython notebook`](http://localhost:8002) with the `Django Shell-Plus` kernel
   ```python
   create_exchanges.delay() # adds TSX, TSXV, NASDAQ and NYSE exchanges to database
   update_securities_symbols.delay() # adds S&P500 and S&P/TSX tickers to database
