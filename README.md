@@ -93,34 +93,62 @@ $ make processes
 
 ## **Miscellaneous**
 ### Sample Python Script
-Open this script using [`ipython notebook`](http://localhost:8002) to generate a simple and/or exponential moving average for all tickers whose __close value__ is less or equal to __$2.5__ on date specified
-
+The test script below uses [`ipython notebook`](http://localhost:8002) to generate a simple and/or exponential moving average for the lowest three tickers whose __close value__ is less or equal to __$2.5__ as of today. The second part of the script performs a backward and forward testing for the selected tickers using a __coin flip__ day trading strategy(__short__=1, __long__=1).
 ```python
-# -*- coding: utf-8 -*-
-
-from __future__ import absolute_import
-from datetime import date, timedelta
-
-
-# turn on matplotlib inline and save figs as pdfs or svg
-get_ipython().magic(u'matplotlib inline')
-get_ipython().magic(u"config InlineBackend.figure_format = 'svg'")
-
-# fetch daily prices for ticker(s)
-today = '2016-01-29' # date.today()
-tickers = DailyPrice.objects.filter(close_price__lte=2.5, price_date=today).values_list('symbol__ticker', flat=True)
+    # -*- coding: utf-8 -*-
+    from __future__ import absolute_import
+    from datetime import date, timedelta
 
 
-# set start and end dates
-start_date = '2015-01-01'
-end_date = today
+    # turn matplotlib inline and asave figs as pdfs or svg
+    get_ipython().magic(u'matplotlib inline')
+    get_ipython().magic(u"config InlineBackend.figure_format = 'svg'")
 
-# initialize plot class
-p = plot.PlotSymbol(tickers)
 
-# plot a simple moving average using pandas
-ma_type = 'simple' # 'exponential' is another option
-p.plot(ma_type=ma_type, start_date=start_date, end_date=end_date)
+    # fetch daily prices for tickers of interest
+    today = date.today().strftime('%Y-%m-%d')
+    tickers = DailyPrice.objects.filter(
+        close_price__lte=3.,
+        price_date=today).order_by('close_price').values_list(
+        'symbol__ticker',
+        flat=True)[:3]
+
+
+    # Plot Close Price and Moving Averages for Specific Tickers
+
+    # initialize plot function
+    te = plot.PlotSymbol(tickers)
+
+    # set start and end dates
+    start_date = '2015-01-01'
+    end_date = today
+
+    # plot data with simple moving averages
+    ma_type = 'simple'
+    te.plot(ma_type=ma_type, start_date=start_date, end_date=end_date)
+
+
+    # Trading Strategy Simulations
+
+    # import random
+    import random
+
+    # initialize simulations for tickers
+    mcs = []
+
+    # initiliaze strategy
+    strategy = RandomStrategy()
+
+    # start simulation
+    ptr = 0
+    for ticker in tickers:
+        random.seed()
+        mcs.append(MonteCarlo(strategy,ticker))
+
+        # test strategy
+        mcs[ptr].run_strategy()
+
+        ptr += 1
 ```
 
 ### Makefile Help
