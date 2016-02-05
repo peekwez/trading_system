@@ -19,7 +19,7 @@ $ cd trading_system
 ```
 
 ### Install Application Dependencies
-copy and paste the lines below to install the following dependencies
+Copy and paste the lines below to install the following dependencies
 ```
 $ sudo apt-get install -y build-essential gfortran gcc libatlas-base-dev  curl git python-dev libpq-dev libssl-dev postgresql-client libxml2-dev libxsltl-dev libgraphviz-dev libopenblas-dev liblapack-dev
 $ sudo apt-get build-dep python-matplotlib
@@ -34,27 +34,27 @@ $ npm install -g redis-commander
 $ make setup
 ```
 
-The above command performs the following tasks
+the command chains several commands to
 
-* starts `postgres:9.4.1` and `redis:2.8` services using `docker-compose`. The `postgres` container's port `5432/tcp` is linked to port `5431` on the local machine while the `redis` container's port `6379/tcp` is linked to port `6378` on the local machine
+* start a `postgres` and `redis` docker contains using `postgres:9.4.1` and `redis:2.8` images respectively. `docker-compose` is used to start the services. The `postgres` port `5432/tcp` is linked to port `5431` on the local machine, while `redis` port `6379/tcp` is linked to port `6378` on the local machine. `redis` is started to serve as a broker for `celery`
 
-* creates a database called `securities_master` and a Django admin superuser for the application. The superuser is created through a shell prompt
+* create a database called `securities_master` and a `Django` **admin** superuser for the application. The shell will prompt you to create the superuser login credentials
 
-* creates log files in `trading_system/db/logs/` for all the supervisor processes
+* create a `logs` directory in `trading_system/src/` and log files for all the supervisor processes inside the `logs` directory
 
 ### Supervisor Processes
 ```
 $ make processes
 $ make status  # (Check if processes are up and running)
 ```
+the first command starts the following processes as a daemon
 
-The following process are started in the background by supervisor
-* `celery worker`
-* `celery beat`
-* `django development server`  - the `admin` page is at [http://localhost:8000/admin](http://localhost:8000/admin)
-* `celery flower` at [http://localhost:8001](http://localhost:8001)
-* `ipython notebook` at [http://localhost:8002](http://localhost:8002) with a `Django Shell-Plus` kernel
-* `redis-commander` at [http://localhost:8003](http://localhost:8003)
+* `celery worker` - a task queue for real-time processing
+* `celery beat` -  a task scheduler
+* `Django development server`  - the **admin** page is at [http://localhost:8000/admin](http://localhost:8000/admin)
+* `celery flower` - web client for monitoring `celery-worker`[http://localhost:8001](http://localhost:8001)
+* `ipython notebook` - for python scripting; modules are imported using the `Django Shell-Plus` kernel [http://localhost:8002](http://localhost:8002)
+* `redis-commander` web client for `redis` [http://localhost:8003](http://localhost:8003)
 
 
 ### Populating Database
@@ -66,7 +66,7 @@ The following process are started in the background by supervisor
   Support email = support@yahoo.com
   ```
 
-* execute the _celery_ tasks inside an [`ipython notebook`](http://localhost:8002) cell using the `Django Shell-Plus` kernel
+* execute the `celery` tasks inside an [`ipython notebook`](http://localhost:8002) cell using the `Django Shell-Plus` kernel
   ```python
   create_exchanges.delay() # adds TSX, TSXV, NASDAQ and NYSE exchanges to database
   update_securities_symbols.delay() # adds S&P500 and S&P/TSX tickers to database
@@ -78,11 +78,11 @@ The following process are started in the background by supervisor
 
 * update the historical prices for the added tickers by executing the following commands inside a cell in the [`ipython notebook`](http://localhost:8002) using the `Django Shell-Plus` kernel
   ```python
-  add_prices_for_tickers.delay(tickers=['tk1','tk2','...'])
+  add_prices_for_tickers.delay(tickers=['AAPL','BBD-B.TO,'...'])
   ```
 
 ### Daily Prices
-* `update_prices` _celery_ task is executed every 10 minutes between 9am-6pm during the weekdays using `celery-beat` as the scheduler and the `celery-worker` as the task queue. _Redis_ is used as the _celery_ broker.
+* `update_prices` task is executed every 10 minutes between 9am-6pm during the weekdays using `celery-beat` as the scheduler and the `celery-worker` as the task queue.
 
 ## **After System Restart/Reboot**
 `cd` into application directory and execute the following commands
@@ -93,9 +93,7 @@ $ make processes
 
 ## **Miscellaneous**
 ### Sample Python Script
-This script can be run in [`ipython notebook`](http://localhost:8002) to generate a
-simple and/or exponential moving average for all tickers whose value is less
-or equal to **$2.5** on the specified date
+Open this script using [`ipython notebook`](http://localhost:8002) to generate a simple and/or exponential moving average for all tickers whose __close value__ is less or equal to __$2.5__ on date specified
 
 ```python
 # -*- coding: utf-8 -*-
@@ -104,11 +102,11 @@ from __future__ import absolute_import
 from datetime import date, timedelta
 
 
-# turn matplotlib inline and save figs as pdfs or svg
+# turn on matplotlib inline and save figs as pdfs or svg
 get_ipython().magic(u'matplotlib inline')
 get_ipython().magic(u"config InlineBackend.figure_format = 'svg'")
 
-# fetch daily prices for tickers
+# fetch daily prices for ticker(s)
 today = '2016-01-29' # date.today()
 tickers = DailyPrice.objects.filter(close_price__lte=2.5, price_date=today).values_list('symbol__ticker', flat=True)
 
@@ -117,7 +115,7 @@ tickers = DailyPrice.objects.filter(close_price__lte=2.5, price_date=today).valu
 start_date = '2015-01-01'
 end_date = today
 
-# initialized plot class
+# initialize plot class
 p = plot.PlotSymbol(tickers)
 
 # plot a simple moving average using pandas
@@ -138,7 +136,6 @@ $ make help
 ├── Makefile
 ├── Makefile.in
 ├── monaco.ttf
-├── nginx.conf
 ├── README.md
 ├── requirements.txt
 ├── setup.cfg
@@ -148,7 +145,7 @@ $ make help
 │   │   ├── __init__.py
 │   │   ├── migrations
 │   │   │   └── __init__.py
-│   │   ├── models.py
+│   │   ├── models.py├── nginx.conf
 │   │   ├── tasks.py
 │   │   ├── tests.py
 │   │   ├── utils
