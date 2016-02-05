@@ -36,7 +36,7 @@ $ make setup
 
 the command chains several commands to
 
-* start a `postgres` and `redis` docker contains using `postgres:9.4.1` and `redis:2.8` images respectively. `docker-compose` is used to start the services. The `postgres` port `5432/tcp` is linked to port `5431` on the local machine, while `redis` port `6379/tcp` is linked to port `6378` on the local machine. `redis` is started to serve as a broker for `celery`
+* start a `postgres` and `redis` docker containers using `postgres:9.4.1` and `redis:2.8` images respectively. `docker-compose` is used to start the services. `postgres'` port `5432/tcp` is linked to port `5431` on the local machine, while `redis'` port `6379/tcp` is linked to port `6378` on the local machine. `redis` is started to serve as a broker for `celery`
 
 * create a database called `securities_master` and a `Django` **admin** superuser for the application. The shell will prompt you to create the superuser login credentials
 
