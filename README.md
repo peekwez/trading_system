@@ -134,6 +134,7 @@ Use the command below to see the options available for Makefile
 ├── Makefile
 ├── Makefile.in
 ├── monaco.ttf
+├── nginx.conf
 ├── README.md
 ├── requirements.txt
 ├── setup.cfg
@@ -163,9 +164,9 @@ Use the command below to see the options available for Makefile
 │   ├── manage.py
 │   └── systems
 │       ├── bitops.py
-│       ├── commonsys.py
 │       ├── __init__.py
-│       ├── randomsys.py
+│       ├── simulations.py
+│       ├── strategies.py
 │       └── tests
 │           ├── __init__.py
 │           └── test_bitops.py
