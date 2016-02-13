@@ -110,7 +110,7 @@ The test script below uses [`ipython notebook`](http://localhost:8002) to genera
     # Plot Close Price and Moving Averages for Specific Tickers
 
     # initialize plot function
-    te = plot.PlotSymbol(tickers)
+    te = plots.PlotSymbol(tickers)
 
     # set start and end dates
     start_date = '2015-01-01'
