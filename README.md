@@ -60,6 +60,7 @@ the first command starts the following processes as a daemon
 ### Populating Database
 
 * execute the following `celery` tasks using [`ipython notebook`](http://localhost:8002) with the `Django Shell-Plus` kernel
+
   ```python
   tasks.add_symbols.delay() # all symbols for S&P/TSX and S&P/TSXV Indices
   tasks.add_historical_data_all.delay() # add historical data 10 year
