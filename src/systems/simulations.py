@@ -6,7 +6,7 @@ import datetime as dt
 # import database and system models
 from data.models import DailyPrice, Symbol
 from data.misc import colors
-from data.plots import configure_plot
+from data.plots import configure_plot, font_prop
 
 # import panda and numpy libraries
 import numpy as np

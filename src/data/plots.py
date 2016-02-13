@@ -25,13 +25,12 @@ def configure_plot():
         mpl.use("TKagg")
     mpl.rcParams['ps.usedistiller']  = 'xpdf'
     mpl.rcParams['ps.distiller.res'] = 6000
-    font_prop = fm.FontProperties(fname="monaco.ttf")
     font_prop.set_size(11)
     font_prop.set_weight(200)
     rc('legend', labelspacing=0.2, handleheight=1.)
     rc('savefig', format='pdf', dpi='400')
     rc('pdf', fonttype=3)
-
+font_prop = fm.FontProperties(fname="monaco.ttf")
 
 # plot function
 class PlotSymbol:
