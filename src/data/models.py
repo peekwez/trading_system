@@ -128,12 +128,12 @@ class Symbol(CommonInfo):
         return self.ticker
 
     @property
-    def oticker(self):
-        if self.currency == 'CAD':
-            ticker = self.ticker.split('.')
-            return ticker[0].replace('-','.')
-        else:
-            return ticker
+    def yahoo_ticker(self):
+        ticker = self.ticker.replace('.','-')
+        if self.exchange.abbrev == 'TSX':
+            return ticker + ".TO"
+        elif self.exchange.abbrev == 'TSXV':
+            return ticker + ".V"
 
 class DailyPrice(CommonInfo):
 

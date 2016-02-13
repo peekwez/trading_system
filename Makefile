@@ -1,4 +1,4 @@
-option?=""
+option?=
 process?=db-celery:db-worker
 
 include Makefile.in
@@ -132,7 +132,7 @@ runserverplus:
 # shell_plus
 shellplus:
 	$(call _info, Starting ipython shell with notebook plugin)
-	./src/manage.py shell_plus --$(option)
+	./src/manage.py shell_plus $(option)
 
 # tree
 tree:
@@ -143,6 +143,6 @@ tree:
 collectstatic:
 	$(call _info, Collecting static files)
 	./src/manage.py collectstatic --noinput
-	cp -r ${IPYTHON_STATIC}/* src/static/
-	cp -r ${REDIS_STATIC}/* src/static/
-	cp -r ${FLOWER_STATIC}/* src/static/
+	cp -r ${IPY_STATIC}/* src/static/
+	cp -r ${RED_STATIC}/* src/static/
+	cp -r ${FLW_STATIC}/* src/static/

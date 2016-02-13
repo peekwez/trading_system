@@ -109,15 +109,15 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'EST'
 
 CELERYBEAT_SCHEDULE = {
-    'update-prices-every-10-minutes': {
-        'task': 'data.tasks.update_prices',
+    'add-or-update-quotes-every-10-minutes': {
+        'task': 'data.tasks.update_daily_quotes',
         'schedule': crontab(minute='*/10',
                             hour='9-18',
                             day_of_week='mon-fri'),
         'args': (),
     },
     'add-historical-prices-once-a-year': {
-        'task': 'data.tasks.add_historical_prices',
+        'task': 'data.tasks.add_historical_data_all',
         'schedule': crontab(minute='30',
                             hour='10',
                             day_of_week='mon',
@@ -125,8 +125,8 @@ CELERYBEAT_SCHEDULE = {
                             month_of_year='1'),
         'args': (),
     },
-    'update-symbols-once-a-month': {
-        'task': 'data.tasks.update_securities_symbols',
+    'add-or-update-symbols-once-a-month': {
+        'task': 'data.tasks.add_symbols',
         'schedule': crontab(minute='30',
                             hour='10',
                             day_of_week='mon',
@@ -154,7 +154,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR,'static')
 
 GRAPH_MODELS = {
     'all_applications': True,
@@ -162,14 +161,8 @@ GRAPH_MODELS = {
 }
 
 SHELL_PLUS_POST_IMPORTS = (
-    ('data.tasks', ('update_prices', 'update_securities_symbols',
-                    'add_historical_prices', 'add_prices_for_tickers',
-                    'create_exchanges',)),
-    ('data.utils', ('prices', 'symbols', 'exchanges', 'misc', 'plot')),
-    ('systems.bitops', ('btest', 'ibset','ibclr')),
-    ('systems.strategies', ('BaseStrategy','RandomStrategy')),
-    ('systems.simulations', ('MonteCarlo')),
-
+    ('data', ('misc', 'plots', 'utils', 'tasks')),
+    ('systems', ('bitops', 'strategies', 'simulations')),
 )
 
 NOTEBOOK_ARGUMENTS = [

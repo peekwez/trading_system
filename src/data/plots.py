@@ -16,23 +16,27 @@ from matplotlib.ticker import FuncFormatter, MaxNLocator
 from math import floor, ceil
 
 # import database models
-from data.utils.misc import pcolors
+from data.misc import colors
 from data.models import DailyPrice, Symbol
 
 # matplotlib settings
-mpl.use("TKagg")
-mpl.rcParams['ps.usedistiller']  = 'xpdf'
-mpl.rcParams['ps.distiller.res'] = 6000
-font_prop = fm.FontProperties(fname="monaco.ttf")
-font_prop.set_size(11)
-font_prop.set_weight(200)
-rc('legend', labelspacing=0.2, handleheight=1.)
-rc('savefig', format='pdf', dpi='400')
-rc('pdf', fonttype=3)
+def configure_plot():
+    if mpl.get_backend().lower() not in ['qt5agg', 'dt4agg', 'tkagg']:
+        mpl.use("TKagg")
+    mpl.rcParams['ps.usedistiller']  = 'xpdf'
+    mpl.rcParams['ps.distiller.res'] = 6000
+    font_prop = fm.FontProperties(fname="monaco.ttf")
+    font_prop.set_size(11)
+    font_prop.set_weight(200)
+    rc('legend', labelspacing=0.2, handleheight=1.)
+    rc('savefig', format='pdf', dpi='400')
+    rc('pdf', fonttype=3)
 
 
 # plot function
 class PlotSymbol:
+
+    configure_plot()
 
     '''
     Plots figures for key, start and end dates specified
@@ -67,7 +71,7 @@ class PlotSymbol:
         prices = self.prices.filter(symbol__ticker=ticker,**kwargs).order_by('price_date').values()
         symbol = self.symbols.get(ticker=ticker)
         company = symbol.name
-        oticker = symbol.oticker
+        yahoo_ticker = symbol.yahoo_ticker
         currency = symbol.currency
 
         # create panda data frame and time series
@@ -77,7 +81,7 @@ class PlotSymbol:
 
 
         # get figures and sizes
-        fig = plt.figure(oticker+ma_type, figsize=(11,10))
+        fig = plt.figure(yahoo_ticker+ma_type, figsize=(11,10))
         gs  = gridspec.GridSpec(2,1, height_ratios=[5,3])
         ax1 = fig.add_subplot(gs[0])
         ax2 = fig.add_subplot(gs[1])
@@ -87,10 +91,10 @@ class PlotSymbol:
         # ====================
 
         # plot values for key
-        ts.plot(ax=ax1, color=pcolors.SYMB, legend=True, label='{0:s}'.format(oticker))
+        ts.plot(ax=ax1, color=colors.SYMB, legend=True, label='{0:s}'.format(yahoo_ticker))
 
         # add fill to plot
-        ax1.fill_between(ts.index, ts.values, facecolor=pcolors.FILL, alpha=0.9)
+        ax1.fill_between(ts.index, ts.values, facecolor=colors.FILL, alpha=0.9)
 
 
         # add moving averages
@@ -106,13 +110,13 @@ class PlotSymbol:
             if ma_type == 'simple':
                 label = 'S' + end_label
                 pd.rolling_mean(ts,days).plot(ax=ax1,
-                                              color=pcolors.MA[ma],
+                                              color=colors.MA[ma],
                                               legend=True,
                                               label=label)
             elif ma_type == 'exponential':
                 label = 'E' + end_label
                 pd.ewma(ts,span=days).plot(ax=ax1,
-                                           color=pcolors.MA[ma],
+                                           color=colors.MA[ma],
                                            legend=True,
                                            label=label)
 
@@ -159,7 +163,7 @@ class PlotSymbol:
         ax1.set_title(
             '{0:s} for {1:s} ({2:s}) from {3:s} to {4:s}'.format(name(key),
                                                                 company,
-                                                                oticker,
+                                                                yahoo_ticker,
                                                                 kwargs['price_date__gte'],
                                                                 kwargs['price_date__lte']),
             fontproperties=font_prop, size=13)
@@ -168,7 +172,7 @@ class PlotSymbol:
         # ============================
 
         # plot vertical lines for volume
-        ax2.vlines(vs.index, [0], vs.values, color=pcolors.VLINE)
+        ax2.vlines(vs.index, [0], vs.values, color=colors.VLINE)
 
         # set axis labels
         ax2.set_xlabel('Date', fontproperties=font_prop, size=13)

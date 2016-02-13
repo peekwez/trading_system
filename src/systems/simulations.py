@@ -5,7 +5,8 @@ import datetime as dt
 
 # import database and system models
 from data.models import DailyPrice, Symbol
-from data.utils.misc import pcolors
+from data.misc import colors
+from data.plots import configure_plot
 
 # import panda and numpy libraries
 import numpy as np
@@ -17,16 +18,6 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 from matplotlib import rc, gridspec
 from matplotlib.ticker import FuncFormatter, MaxNLocator
-
-mpl.use("TKagg")
-mpl.rcParams['ps.usedistiller']  = 'xpdf'
-mpl.rcParams['ps.distiller.res'] = 6000
-font_prop = fm.FontProperties(fname="monaco.ttf")
-font_prop.set_size(11)
-font_prop.set_weight(200)
-rc('legend', labelspacing=0.2, handleheight=1.)
-rc('savefig', format='pdf', dpi='400')
-rc('pdf', fonttype=3)
 
 
 def smatrix(m,n,strategy):
@@ -119,11 +110,14 @@ class MonteCarlo:
 
     def plot(self,figname):
 
+        # configure matplotlib
+        configure_plot()
+
         # use colors for moving average chart
-        colors = [pcolors.SYMB]
+        colors = [colors.SYMB]
         ma_keys = ['MA_50', 'MA_10', 'MA_5', 'MA_40', 'MA_20', 'MA_30','MA_60']
         for key in ma_keys:
-            colors.append(pcolors.MA[key])
+            colors.append(colors.MA[key])
 
 
         dates = self.prices[:,2]
@@ -154,7 +148,7 @@ class MonteCarlo:
 
         # set title
         self.ax.set_title('Random (Coin Toss) Trading Strategy for {0:s} - {1:s} Testing'.format(
-            self.symbol.oticker,
+            self.symbol.yahoo_ticker,
             figname.capitalize(),
         ),fontproperties=font_prop, size=13)
 

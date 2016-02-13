@@ -5,24 +5,16 @@ from __future__ import absolute_import
 from celery import shared_task
 
 # import app utils
-from data.utils import symbols, prices, exchanges
+from data.utils import update_symbols, update_history, update_quotes
 
 @shared_task
-def update_prices():
-    prices.update_prices()
+def add_symbols():
+    update_symbols.update_db()
 
 @shared_task
-def update_securities_symbols():
-    symbols.update_securities_symbols()
+def add_historical_data_all():
+    update_history().update_db()
 
 @shared_task
-def add_historical_prices():
-    prices.add_historical_prices()
-
-@shared_task
-def add_prices_for_tickers(tickers, start_date=None):
-    prices.add_prices_for_tickers(tickers, start_date)
-
-@shared_task
-def create_exchanges():
-    exchanges.create_exchanges()
+def add_historical_data_ticker(tickers):
+    update_history().update_db(tickers)
