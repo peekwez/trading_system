@@ -113,20 +113,10 @@ $ make status  # (Check if processes are up and running)
 
 <ul>
 <li>
-<p>log in to the <a href="http://localhost:8000/admin">Admin Page</a> and add the following information for <strong>Yahoo</strong> to the <strong>Data Vendor table</strong></p>
+<p>execute the following <code>celery</code> tasks using <a href="http://localhost:8002"><code>ipython notebook</code></a> with the <code>Django Shell-Plus</code> kernel</p>
 
-<pre><code>Name = Yahoo Finance
-Historical url = http://ichart.finance.yahoo.com/table.csv
-Quotes url = http://download.finance.yahoo.com/d/quotes.csv
-Support email = support@yahoo.com
-</code></pre>
-</li>
-<li>
-<p>execute the <code>celery</code> tasks using <a href="http://localhost:8002"><code>ipython notebook</code></a> with the <code>Django Shell-Plus</code> kernel</p>
-
-<div class="highlight highlight-source-python"><pre>create_exchanges.delay() <span class="pl-c"># adds TSX, TSXV, NASDAQ and NYSE exchanges to database</span>
-update_securities_symbols.delay() <span class="pl-c"># adds S&amp;P500 and S&amp;P/TSX tickers to database</span>
-add_historical_prices.delay() <span class="pl-c"># adds daily prices from Jan 01, 10 years ago to today</span></pre></div>
+<div class="highlight highlight-source-python"><pre>tasks.add_symbols.delay() <span class="pl-c"># all symbols for S&amp;P/TSX and S&amp;P/TSXV Indices</span>
+tasks.add_historical_data_all.delay() <span class="pl-c"># add historical data 10 year</span></pre></div>
 </li>
 </ul>
 
@@ -138,7 +128,7 @@ add_historical_prices.delay() <span class="pl-c"># adds daily prices from Jan 01
 <li>
 <p>update the historical prices for the added tickers by executing the following commands inside a cell in the <a href="http://localhost:8002"><code>ipython notebook</code></a> using the <code>Django Shell-Plus</code> kernel</p>
 
-<div class="highlight highlight-source-python"><pre>add_prices_for_tickers.delay(<span class="pl-v">tickers</span><span class="pl-k">=</span>[<span class="pl-s"><span class="pl-pds">'</span>AAPL<span class="pl-pds">'</span></span>,<span class="pl-s"><span class="pl-pds">'</span>BBD-B.TO,<span class="pl-pds">'</span></span><span class="pl-c1">...</span><span class="pl-s"><span class="pl-pds">'</span>])<span class="pl-ii"></span></span></pre></div>
+<div class="highlight highlight-source-python"><pre>tasks.add_historical_data_ticker.delay(<span class="pl-v">tickers</span><span class="pl-k">=</span>[<span class="pl-s"><span class="pl-pds">'</span>BBD.B<span class="pl-pds">'</span></span>,<span class="pl-s"><span class="pl-pds">'</span>AME<span class="pl-pds">'</span></span>,<span class="pl-c1">...</span>])</pre></div>
 </li>
 </ul>
 
@@ -147,7 +137,7 @@ add_historical_prices.delay() <span class="pl-c"># adds daily prices from Jan 01
 
 <ul>
 <li>
-<code>update_prices</code> task is executed every 10 minutes between 9am-6pm during the weekdays using <code>celery-beat</code> as the scheduler and the <code>celery-worker</code> as the task queue.</li>
+<code>tasks.update_daily_quotes</code> task is executed every 10 minutes between 9am-6pm during the weekdays using <code>celery-beat</code> as the scheduler and the <code>celery-worker</code> as the task queue.</li>
 </ul>
 
 <h2>
@@ -191,7 +181,7 @@ $ make processes
     <span class="pl-c"># Plot Close Price and Moving Averages for Specific Tickers</span>
 
     <span class="pl-c"># initialize plot function</span>
-    te <span class="pl-k">=</span> plot.PlotSymbol(tickers)
+    te <span class="pl-k">=</span> plots.PlotSymbol(tickers)
 
     <span class="pl-c"># set start and end dates</span>
     start_date <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>2015-01-01<span class="pl-pds">'</span></span>
@@ -240,25 +230,29 @@ $ make processes
 ├── Makefile
 ├── Makefile.in
 ├── monaco.ttf
+├── nginx.conf
 ├── README.md
 ├── requirements.txt
 ├── setup.cfg
 ├── src
 │   ├── data
 │   │   ├── admin.py
+│   │   ├── assets
+│   │   │   ├── __init__.py
+│   │   │   ├── other.csv
+│   │   │   ├── sec.csv
+│   │   │   ├── tsx.csv
+│   │   │   └── tsxv.csv
+│   │   ├── constants.py
 │   │   ├── __init__.py
 │   │   ├── migrations
 │   │   │   └── __init__.py
-│   │   ├── models.py├── nginx.conf
+│   │   ├── misc.py
+│   │   ├── models.py
+│   │   ├── plots.py
 │   │   ├── tasks.py
 │   │   ├── tests.py
-│   │   ├── utils
-│   │   │   ├── exchanges.py
-│   │   │   ├── __init__.py
-│   │   │   ├── misc.py
-│   │   │   ├── plot.py
-│   │   │   ├── prices.py
-│   │   │   └── symbols.py
+│   │   ├── utils.py
 │   │   └── views.py
 │   ├── db
 │   │   ├── celery.py
