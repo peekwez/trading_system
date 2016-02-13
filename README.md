@@ -58,19 +58,11 @@ the first command starts the following processes as a daemon
 
 
 ### Populating Database
-* log in to the [Admin Page](http://localhost:8000/admin) and add the following information for **Yahoo** to the **Data Vendor table**
-  ```
-  Name = Yahoo Finance
-  Historical url = http://ichart.finance.yahoo.com/table.csv
-  Quotes url = http://download.finance.yahoo.com/d/quotes.csv
-  Support email = support@yahoo.com
-  ```
 
-* execute the `celery` tasks using [`ipython notebook`](http://localhost:8002) with the `Django Shell-Plus` kernel
+* execute the following `celery` tasks using [`ipython notebook`](http://localhost:8002) with the `Django Shell-Plus` kernel
   ```python
-  create_exchanges.delay() # adds TSX, TSXV, NASDAQ and NYSE exchanges to database
-  update_securities_symbols.delay() # adds S&P500 and S&P/TSX tickers to database
-  add_historical_prices.delay() # adds daily prices from Jan 01, 10 years ago to today
+  tasks.add_symbols.delay() # all symbols for S&P/TSX and S&P/TSXV Indices
+  tasks.add_historical_data_all.delay() # add historical data 10 year
   ```
 
 ### Updating Tickers Manually
@@ -78,11 +70,11 @@ the first command starts the following processes as a daemon
 
 * update the historical prices for the added tickers by executing the following commands inside a cell in the [`ipython notebook`](http://localhost:8002) using the `Django Shell-Plus` kernel
   ```python
-  add_prices_for_tickers.delay(tickers=['AAPL','BBD-B.TO,'...'])
+  tasks.add_historical_data_ticker.delay(tickers=['BBD.B','AME',...])
   ```
 
 ### Daily Prices
-* `update_prices` task is executed every 10 minutes between 9am-6pm during the weekdays using `celery-beat` as the scheduler and the `celery-worker` as the task queue.
+* `tasks.update_daily_quotes` task is executed every 10 minutes between 9am-6pm during the weekdays using `celery-beat` as the scheduler and the `celery-worker` as the task queue.
 
 ## **After System Restart/Reboot**
 `cd` into application directory and execute the following commands
@@ -164,25 +156,29 @@ $ make help
 ├── Makefile
 ├── Makefile.in
 ├── monaco.ttf
+├── nginx.conf
 ├── README.md
 ├── requirements.txt
 ├── setup.cfg
 ├── src
 │   ├── data
 │   │   ├── admin.py
+│   │   ├── assets
+│   │   │   ├── __init__.py
+│   │   │   ├── other.csv
+│   │   │   ├── sec.csv
+│   │   │   ├── tsx.csv
+│   │   │   └── tsxv.csv
+│   │   ├── constants.py
 │   │   ├── __init__.py
 │   │   ├── migrations
 │   │   │   └── __init__.py
-│   │   ├── models.py├── nginx.conf
+│   │   ├── misc.py
+│   │   ├── models.py
+│   │   ├── plots.py
 │   │   ├── tasks.py
 │   │   ├── tests.py
-│   │   ├── utils
-│   │   │   ├── exchanges.py
-│   │   │   ├── __init__.py
-│   │   │   ├── misc.py
-│   │   │   ├── plot.py
-│   │   │   ├── prices.py
-│   │   │   └── symbols.py
+│   │   ├── utils.py
 │   │   └── views.py
 │   ├── db
 │   │   ├── celery.py

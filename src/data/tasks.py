@@ -13,8 +13,12 @@ def add_symbols():
 
 @shared_task
 def add_historical_data_all():
-    update_history().update_db()
+    update_history.update_db()
 
 @shared_task
 def add_historical_data_ticker(tickers):
-    update_history().update_db(tickers)
+    update_history.update_db(tickers)
+
+@shared_task
+def update_daily_quotes():
+    update_quotes.update_db()
