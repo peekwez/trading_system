@@ -26,4 +26,7 @@ python:
   - "2.7"
 install: "pip install --user -r requirements.txt"
 script: make test_systems
-after_success: coveralls
+before_install:
+  - pip install --user codecov
+after_success:
+  - codecov
