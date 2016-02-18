@@ -5,7 +5,7 @@ import datetime as dt
 
 # import database and system models
 from data.models import DailyPrice, Symbol
-from data.misc import colors
+from data.misc import colors, info
 from data.plots import configure_plot, font_prop
 
 # import panda and numpy libraries
@@ -29,14 +29,18 @@ def smatrix(m,n,strategy):
     return sig
 
 def plmatrix(signal,data):
-    m,n = np.shape(signal)
+    m = np.shape(signal)[0]
+    n = len(data)
     mat = np.zeros([m,n],dtype='float')
     for i in range(m):
         for k in range(n):
             action = signal[i,k]
             if action[0] != '':
-                coeffs = action[1]
-                mat[i,k] = coeffs[0]*data[k,0] + coeffs[1]*data[k,1]
+                try:
+                    coeffs = action[1]
+                    mat[i,k] = coeffs[0]*data[k,0] + coeffs[1]*data[k,1]
+                except Exception, e:
+                    raise Exception(info.FAIL + "Could not assemble signal matrix: {0:s}" + info.ENDC)
     return mat
 
 class MonteCarlo:
@@ -87,6 +91,7 @@ class MonteCarlo:
         self.prices  = np.array(tmp)
 
     def common_run(self):
+        self.ncols = len(self.prices)
         self.mat = plmatrix(self.signals, self.prices)
         self.daily_pl  = self.size*np.dot(self.mat,np.ones(self.ncols))
         self.sample_val = self.capital + self.daily_pl
@@ -114,10 +119,10 @@ class MonteCarlo:
         configure_plot()
 
         # use colors for moving average chart
-        colors = [colors.SYMB]
+        pcolors = [colors.SYMB]
         ma_keys = ['MA_50', 'MA_10', 'MA_5', 'MA_40', 'MA_20', 'MA_30','MA_60']
         for key in ma_keys:
-            colors.append(colors.MA[key])
+            pcolors.append(colors.MA[key])
 
 
         dates = self.prices[:,2]
@@ -142,7 +147,7 @@ class MonteCarlo:
             ts = pd.Series(data=pl,index=dates)
 
             # plot time series
-            ts.plot(ax=self.ax,color=colors[i], label='W={0:3d} L={1:3d}'.format(wins,loss))
+            ts.plot(ax=self.ax,color=pcolors[i], label='W={0:3d} L={1:3d}'.format(wins,loss))
 
 
 
