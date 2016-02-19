@@ -70,7 +70,6 @@ class PlotSymbol:
         prices = self.prices.filter(symbol__ticker=ticker,**kwargs).order_by('price_date').values()
         symbol = self.symbols.get(ticker=ticker)
         company = symbol.name
-        yahoo_ticker = symbol.yahoo_ticker
         currency = symbol.currency
 
         # create panda data frame and time series
@@ -80,7 +79,7 @@ class PlotSymbol:
 
 
         # get figures and sizes
-        fig = plt.figure(yahoo_ticker+ma_type, figsize=(11,10))
+        fig = plt.figure(ticker+ma_type, figsize=(11,10))
         gs  = gridspec.GridSpec(2,1, height_ratios=[5,3])
         ax1 = fig.add_subplot(gs[0])
         ax2 = fig.add_subplot(gs[1])
@@ -90,7 +89,7 @@ class PlotSymbol:
         # ====================
 
         # plot values for key
-        ts.plot(ax=ax1, color=colors.SYMB, legend=True, label='{0:s}'.format(yahoo_ticker))
+        ts.plot(ax=ax1, color=colors.SYMB, legend=True, label='{0:s}'.format(ticker))
 
         # add fill to plot
         ax1.fill_between(ts.index, ts.values, facecolor=colors.FILL, alpha=0.9)
@@ -161,7 +160,7 @@ class PlotSymbol:
         # add title for this plot
         ax1.set_title(
             '{0:s} ({1:s}) from {2:s} to {3:s}'.format(company,
-                                                       yahoo_ticker,
+                                                       ticker,
                                                        kwargs['price_date__gte'],
                                                        kwargs['price_date__lte']),
             fontproperties=font_prop, size=13)

@@ -153,7 +153,7 @@ class MonteCarlo:
 
         # set title
         self.ax.set_title('Random (Coin Toss) Trading Strategy for {0:s} - {1:s} Testing'.format(
-            self.symbol.yahoo_ticker,
+            self.ticker,
             figname.capitalize(),
         ),fontproperties=font_prop, size=13)
 
