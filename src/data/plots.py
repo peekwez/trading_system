@@ -160,11 +160,10 @@ class PlotSymbol:
 
         # add title for this plot
         ax1.set_title(
-            '{0:s} for {1:s} ({2:s}) from {3:s} to {4:s}'.format(name(key),
-                                                                company,
-                                                                yahoo_ticker,
-                                                                kwargs['price_date__gte'],
-                                                                kwargs['price_date__lte']),
+            '{0:s} ({1:s}) from {2:s} to {3:s}'.format(company,
+                                                       yahoo_ticker,
+                                                       kwargs['price_date__gte'],
+                                                       kwargs['price_date__lte'])
             fontproperties=font_prop, size=13)
 
         # ADD SUBPLOT OF VOLUME TRADED
