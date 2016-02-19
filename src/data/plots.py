@@ -163,7 +163,7 @@ class PlotSymbol:
             '{0:s} ({1:s}) from {2:s} to {3:s}'.format(company,
                                                        yahoo_ticker,
                                                        kwargs['price_date__gte'],
-                                                       kwargs['price_date__lte'])
+                                                       kwargs['price_date__lte']),
             fontproperties=font_prop, size=13)
 
         # ADD SUBPLOT OF VOLUME TRADED
