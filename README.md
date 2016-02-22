@@ -1,4 +1,4 @@
-# Kapp Consult - Trading System [![Build Status](https://travis-ci.com/peekwez/trading_system.svg?token=BnDQr5dc9iRq4pSqsjvc&branch=master)](https://travis-ci.com/peekwez/trading_system)
+# Kapp Consult - Trading System [![Build Status](https://travis-ci.com/peekwez/trading_system.svg?token=BnDQr5dc9iRq4pSqsjvc&branch=master)](https://travis-ci.com/peekwez/trading_system)[![codecov.io](https://codecov.io/github/peekwez/trading_system/coverage.svg?branch=develop&token=pxMMTkhT4K)](https://codecov.io/github/peekwez/trading_system?branch=develop)
 
 ## **System Dependencies (Ubuntu 14.04 LTS)**
 Install the following system dependencies
