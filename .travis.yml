@@ -29,4 +29,4 @@ script: make test_systems
 before_install:
   - pip install --user codecov
 after_success:
-  - codecov
+  - codecov --token=6d19e4ee-a03c-40a7-93cf-853cbd42f4ca
