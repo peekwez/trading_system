@@ -7,7 +7,7 @@ import pdb
 import collections
 
 from fabric.colors import green, cyan, white, red, magenta, yellow
-from fabric.api import *
+from fabric.api import env, run, local, put
 from fabric.contrib import django
 
 django.settings_module('db.settings')
@@ -15,10 +15,10 @@ django.settings_module('db.settings')
 # define a fabric environment variables
 env.use_ssh_config = True
 env.shell = "/bin/bash -l -i -c"
-env.pwd="trading_system"
-env.host_string="trading"
-env.repo_url="git@github.com:peekwez/trading_system.git"
-env.branch="develop"
+env.pwd = "trading_system"
+env.host_string = "trading"
+env.repo_url = "git@github.com:peekwez/trading_system.git"
+env.branch = "develop"
 
 
 def git_clone():
