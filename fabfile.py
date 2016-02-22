@@ -7,7 +7,7 @@ import pdb
 import collections
 
 from fabric.colors import green, cyan, white, red, magenta, yellow
-from fabric.api import env, run, local, put, task, settings
+from fabric.api import cd, env, task, settings, run, local, put
 from fabric.contrib import django
 
 django.settings_module('db.settings')
