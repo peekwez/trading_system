@@ -1,6 +1,6 @@
-# Kapp Consulting - Trading System [![Build Status](https://travis-ci.com/peekwez/trading_system.svg?token=BnDQr5dc9iRq4pSqsjvc&branch=master)](https://travis-ci.com/peekwez/trading_system)
----
-## **System Dependencies (Ubuntu 14.04)**
+# Kapp Consult - Trading System [![Build Status](https://travis-ci.com/peekwez/trading_system.svg?token=BnDQr5dc9iRq4pSqsjvc&branch=master)](https://travis-ci.com/peekwez/trading_system)
+
+## **System Dependencies (Ubuntu 14.04 LTS)**
 Install the following system dependencies
 
 * [pip](https://pip.pypa.io/en/stable/installing/)
@@ -75,7 +75,7 @@ the first command starts the following processes as a daemon
   ```
 
 ### Daily Prices
-* `tasks.update_daily_quotes` task is executed every 10 minutes between 9am-6pm during the weekdays using `celery-beat` as the scheduler and the `celery-worker` as the task queue.
+* `tasks.update_daily_quotes` task is executed every __10 minutes__ between __9am-6pm__ during the weekdays using `celery-beat` as the scheduler and the `celery-worker` as the task queue.
 
 ## **After System Restart/Reboot**
 `cd` into application directory and execute the following commands
@@ -86,62 +86,77 @@ $ make processes
 
 ## **Miscellaneous**
 ### Sample Python Script
-The test script below uses [`ipython notebook`](http://localhost:8002) to generate a simple and/or exponential moving average for the lowest three tickers whose __close value__ is less or equal to __$2.5__ as of today. The second part of the script performs a backward and forward testing for the selected tickers using a __coin flip__ day trading strategy(__short__=1, __long__=1).
+The test script below uses the [`ipython notebook`](http://localhost:8002) launched to generate a simple moving average for companies whose latest __close value__ is greater or equal to __$0.5__ but less or equal to __$2.5__, and also with an average volume of __100000__ shares since listed on the __TSX__ exchange. The second part of the script performs a backward and forward test for a random (__coin flip__) trading strategy (__short__ = 1, __long__ = 0) using the tickers from the first part.
+
 ```python
     # -*- coding: utf-8 -*-
-    from __future__ import absolute_import
-    from datetime import date, timedelta
+
+# turn matplotlib inline and save figs as pdfs or svg
+get_ipython().magic(u"matplotlib inline")
+get_ipython().magic(u"config InlineBackend.figure_format = 'svg'")
+
+# get latest date in database
+latest_price = DailyPrice.objects.latest('price_date')
+latest_date  = latest_price.price_date.strftime('%Y-%m-%d')
+
+# define constraints
+lower = 0.5
+upper = 2.5
+volume = 100000
+exchange = 'TSX'
+
+# fetch tickers with daily bars
+tickers = DailyPrice.objects.annotate(
+    average_volume=Avg('volume')
+).filter(
+    close_price__lte=upper,
+    close_price__gte=lower,
+    average_volume__gte=volume,
+    symbol__exchange__abbrev=exchange,
+    price_date=latest_date
+).order_by(
+    'close_price'
+).values_list(
+    'symbol__ticker',
+    flat=True
+)
 
 
-    # turn matplotlib inline and asave figs as pdfs or svg
-    get_ipython().magic(u'matplotlib inline')
-    get_ipython().magic(u"config InlineBackend.figure_format = 'svg'")
+# Plot Close Price and Moving Averages for Specific Tickers
+
+# plot constraints
+start_date = '2015-01-01'
+end_date = latest_date
+ma_type = 'exponential' # options='simple' or 'exponential'
+
+# get number of plots
+end = min(len(tickers),20)
+
+# initialize plot class and plot tickers
+f = plots.PlotSymbol(tickers[:end])
+f.plot(ma_type=ma_type, start_date=start_date, end_date=end_date)
 
 
-    # fetch daily prices for tickers of interest
-    today = date.today().strftime('%Y-%m-%d')
-    tickers = DailyPrice.objects.filter(
-        close_price__lte=3.,
-        price_date=today).order_by('close_price').values_list(
-        'symbol__ticker',
-        flat=True)[:3]
+# Trading Strategy Simulations
 
+# initialize simulations for tickers
+g = []
 
-    # Plot Close Price and Moving Averages for Specific Tickers
+# get number of plots
+end = min(len(tickers),3)
 
-    # initialize plot function
-    te = plots.PlotSymbol(tickers)
+# initialize strategy class
+strategy = strategies.RandomStrategy()
 
-    # set start and end dates
-    start_date = '2015-01-01'
-    end_date = today
+# start simulation
+for k,ticker in enumerate(tickers[:end]):
 
-    # plot data with simple moving averages
-    ma_type = 'simple'
-    te.plot(ma_type=ma_type, start_date=start_date, end_date=end_date)
+    # initialize the basic random generator
+    seed()
 
-
-    # Trading Strategy Simulations
-
-    # import random
-    import random
-
-    # initialize simulations for tickers
-    mcs = []
-
-    # initiliaze strategy
-    strategy = RandomStrategy()
-
-    # start simulation
-    ptr = 0
-    for ticker in tickers:
-        random.seed()
-        mcs.append(MonteCarlo(strategy,ticker))
-
-        # test strategy
-        mcs[ptr].run_strategy()
-
-        ptr += 1
+    # initialize simulation class and test strategy
+    g.append(simulations.MonteCarlo(strategy,ticker))
+    g[k].run_strategy()
 ```
 
 ### Makefile Help
