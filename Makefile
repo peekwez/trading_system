@@ -1,5 +1,6 @@
 option?=
 process?=db-celery:db-worker
+db?=
 
 include Makefile.in
 
@@ -30,8 +31,9 @@ help:
 	@echo " shellplus         Start Django shell using ipython"
 	@echo ""
 
-test_systems:
-	py.test -vv --cov-config=setup.cfg --cov=src src
+tests: removecache
+	$(call _info, Running unit tests)
+	py.test -vv --cov-config=setup.cfg --cov=src $(db) src
 
 setup: docker-services database process-logs
 
@@ -145,4 +147,10 @@ collectstatic:
 	./src/manage.py collectstatic --noinput
 	cp -r ${IPY_STATIC}/* src/static/
 	cp -r ${RED_STATIC}/* src/static/
-	cp -r ${FLW_STATIC}/* src/static/
+	cp -r ${FLW_STATIC}/* src/static
+
+# remove pytest cache
+removecache:
+	$(call _info, Removing pytest cache)
+	find . | grep -E "(__pycache__)" | xargs rm -rf
+	rm -fr .cache

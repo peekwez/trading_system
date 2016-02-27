@@ -25,7 +25,7 @@ langauge: python
 python:
   - "2.7"
 install: "pip install --user -r requirements.txt"
-script: make test_systems
+script: make tests db=--create-db
 before_install:
   - pip install --user codecov
 after_success:
