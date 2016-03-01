@@ -21,12 +21,21 @@ addons:
     - python-setuptools
     - python-matplotlib
     - python-scipy
-langauge: python
+services:
+  - postgresql
+langauge:
+  - python
 python:
   - "2.7"
-install: "pip install --user -r requirements.txt"
-script: make tests db=--create-db
+env:
+  - BUILD_ON_TRAVIS=true
 before_install:
   - pip install --user codecov
+install:
+  - "pip install --user -r requirements.txt"
+before_script:
+  - make database db_port=5432
+script:
+  - make tests db=--create-db
 after_success:
   - codecov --token=6d19e4ee-a03c-40a7-93cf-853cbd42f4ca

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
-from lxml.html import parse
 from urllib2 import urlopen
 from datetime import date
 import time
@@ -23,12 +22,6 @@ yahoo_quotes = lambda tickers: yahoo.quotes_url+'?s='+','.join(ticker for ticker
 def yahoo2db_tickers(ticker):
     return ticker.split('.')[0].replace('-','.')
 
-def df2db_columns():
-    db_fields = []
-    for df_field, db_field in quotes_map:
-        db_fields.append(db_field)
-    return db_fields
-
 def sectors(ticker):
     try:
         return SECTORS[ticker]
@@ -43,9 +36,6 @@ class BaseUtility(object):
 
     def open_url(self, site_url):
         return urlopen(site_url)
-
-    def parse_url(self,response):
-        return parse(response)
 
     def update_db(self,*args,**kwargs):
         pass
@@ -161,8 +151,6 @@ class YahooQuotes(BaseUtility):
 
         today = date.today()
         for line in data:
-            #import pdb
-            #pdb.set_trace()
             ticker = yahoo2db_tickers(line[1])
             symbol = symbols.get(ticker=ticker)
             quote = {
@@ -177,7 +165,8 @@ class YahooQuotes(BaseUtility):
             self.model.objects.update_or_create(
                 symbol=symbol,
                 price_date=today,
-                defaults=quote)
+                defaults=quote
+            )
 
 update_symbols = IndexSymbols(model=Symbol)
 update_history = YahooHistory(model=DailyPrice)

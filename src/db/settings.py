@@ -99,6 +99,9 @@ DATABASES = {
         'PORT': "5431",
     }
 }
+if os.environ.has_key('BUILD_ON_TRAVIS'):
+    DATABASES['default']['PORT'] = "5432"
+
 
 # Celery redis broker
 BROKER_URL = "redis://localhost:6378"

@@ -1,6 +1,7 @@
 option?=
 process?=db-celery:db-worker
 db?=
+db_port?=5431
 
 include Makefile.in
 
@@ -103,8 +104,8 @@ database: createdb makemigrations migrate createsu
 # execute this in web-app container
 createdb:
 	$(call _info, Creating database)
-	dropdb -h localhost -p 5431 -U postgres securities_master --if-exists
-	createdb -h localhost -p 5431 -U postgres securities_master
+	dropdb -h localhost -p $(db_port) -U postgres securities_master --if-exists
+	createdb -h localhost -p $(db_port) -U postgres securities_master
 
 # migrate db changes
 migrate:
