@@ -76,7 +76,7 @@ class IndexSymbols(BaseUtility):
                         'sector': sectors(ticker),
                     }
                     self.model.objects.update_or_create(
-                        name=name,
+                        ticker=ticker,
                         defaults=kwargs
                     )
 
