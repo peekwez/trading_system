@@ -122,7 +122,7 @@ class Symbol(CommonInfo):
 
     class Meta:
         ordering = ("name", "ticker",)
-        unique_together = ("ticker")
+        unique_together = ("ticker",)
 
     def __str__(self):
         return self.ticker
