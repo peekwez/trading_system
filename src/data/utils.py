@@ -157,9 +157,7 @@ class YahooQuotes(BaseUtility):
             try:
                 open_price = float(line[2])
             except ValueError:
-                if float(line[3]) == float(line[4]):
-                    open_price = float(line[3])
-                    print("No open price downloaded for %s, high price used instead" %symbol)
+                print("Could not download open price for %s, update ignored" %symbol)
             quote = {
                 'open_price': open_price,
                 'high_price':  float(line[3]),
