@@ -148,33 +148,28 @@ class YahooQuotes(BaseUtility):
         symbols = Symbol.objects.all()
         tickers = [symbol.yahoo_ticker for symbol in symbols]
         data = self.__fetch_quotes(tickers)
-        mapping = {
-            '2': {'func':float,'name':'open_price'},
-            '3': {'func':float,'name':'high_price'},
-            '4': {'func':float,'name':'low_price'},
-            '5': {'func':float,'name':'close_price'},
-            '6': {'func':int,'name':'volume'},
-        }
-
         today = date.today()
         for line in data:
             ticker = yahoo2db_tickers(line[1])
             symbol = symbols.get(ticker=ticker)
-            quote = {}
-            for k in range(2,7):
-                func = mapping[str(k)]['func']
-                name = mapping[str(k)]['name']
-                try:
-                    quote[name] = func(line[k])
-                except ValueError:
-                    quote[name] = func(0)
-                    print("No %s for %s received. 0 used instead" %(name,symbol))
-            quote['adj_close_price'] = quote['close_price']
-            self.model.objects.update_or_create(
-                symbol=symbol,
-                price_date=today,
-                defaults=quote
-            )
+            try:
+                quote = {
+                    'open_price': float(line[2]),
+                    'high_price': float(line[3]),
+                    'low_price': float(line[4]),
+                    'close_price': float(line[5]),
+                    'adj_close_price': float(line[5]),
+                    'volume': int(line[6]),
+                    'data_vendor': yahoo
+                }
+            except ValueError:
+                print("Update of %s ignored due to bad data" %(symbol))
+            else:
+                self.model.objects.update_or_create(
+                    symbol=symbol,
+                    price_date=today,
+                    defaults=quote
+                )
 
 update_symbols = IndexSymbols(model=Symbol)
 update_history = YahooHistory(model=DailyPrice)
