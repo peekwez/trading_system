@@ -37,11 +37,9 @@ class DailyPriceAdmin(admin.ModelAdmin):
     search_fields = ("symbol__ticker",)
 
 class LotsInline(admin.TabularInline):
-    extra = 3
-    can_delete = True
-    model = Lot
+    model = Portfolio.symbols.through
 
 @admin.register(Portfolio)
 class PortfolioAdmin(admin.ModelAdmin):
-    list_display = ("name", "reporting_name","created_date","daily_gain","p_l","value","cost")
+    list_display = ("name", "reporting_name","created_date","colored_daily_gain","colored_pl","bold_value","bold_cost")
     inlines = (LotsInline,)

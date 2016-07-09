@@ -6,6 +6,7 @@ import datetime
 
 # import django models
 from django.db import models
+from django.utils.html import format_html
 
 # Create your models here.
 class CommonInfo(models.Model):
@@ -238,6 +239,11 @@ class Portfolio(models.Model):
             self.__cost  += lot.quantity*lot.price+lot.fees
         self.__pl = self.__value-self.__cost
 
+        self.__pl_color   = "#ff0000"
+        self.__gain_color = "#ff0000"
+        if self.__pl >= 0: self.__pl_color = "#006600"
+        if self.__gain >= 0: self.__gain_color = "#006600"
+
     @property
     def value(self):
         return round(self.__value,2)
@@ -251,8 +257,40 @@ class Portfolio(models.Model):
         return round(self.__gain,2)
 
     @property
-    def p_l(self):
+    def pl(self):
         return round(self.__pl,2)
+
+    def bold_value(self):
+        return format_html(
+            '<span style="font-weight:600;">{}</span>',
+            self.value,
+        )
+
+    def bold_cost(self):
+        return format_html(
+            '<span style="font-weight:600;">{}</span>',
+            self.cost,
+        )
+
+    def colored_daily_gain(self):
+        return format_html(
+            '<span style="color:{};font-weight:600;">{}</span>',
+            self.__gain_color,
+            self.daily_gain,
+        )
+
+    def colored_pl(self):
+        return format_html(
+            '<span style="color:{};font-weight:600;">{}</span>',
+            self.__pl_color,
+            self.pl,
+        )
+
+    bold_value.short_description = "Value"
+    bold_cost.short_description  = "Cost"
+    colored_daily_gain.short_description  = "Daily Gain"
+    colored_pl.short_description  = "P & L"
+
 
 class Lot(models.Model):
 
