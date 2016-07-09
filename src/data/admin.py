@@ -4,7 +4,7 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
-from data.models import Exchange, DataVendor, Symbol, DailyPrice
+from data.models import Exchange, DataVendor, Symbol, DailyPrice, Portfolio, Lot
 
 # Register your models here.
 @admin.register(Exchange)
@@ -35,3 +35,13 @@ class DailyPriceAdmin(admin.ModelAdmin):
                     "created_date", "last_updated_date")
     list_filter = ("price_date", "symbol__exchange", "symbol__currency")
     search_fields = ("symbol__ticker",)
+
+class LotsInline(admin.TabularInline):
+    extra = 3
+    can_delete = True
+    model = Lot
+
+@admin.register(Portfolio)
+class PortfolioAdmin(admin.ModelAdmin):
+    list_display = ("name", "reporting_name","created_date","daily_gain","p_l","value","cost")
+    inlines = (LotsInline,)

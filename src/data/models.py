@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+from decimal import Decimal
+import datetime
 
 # import django models
 from django.db import models
@@ -185,3 +187,105 @@ class DailyPrice(CommonInfo):
     class Meta:
         ordering = ('-price_date','symbol')
         unique_together = ("symbol", "price_date")
+
+
+class Portfolio(models.Model):
+
+    """ Portfolio model """
+
+    name = models.CharField(
+        max_length=255,
+    )
+
+    reporting_name =  models.CharField(
+        max_length=30,
+    )
+
+    created_date = models.DateTimeField(
+        auto_now_add=True,
+        null=False
+    )
+
+    symbols = models.ManyToManyField(
+        "data.Symbol",
+        through="data.Lot",
+        related_name="portfolios",
+        related_query_name="portfolio",
+    )
+
+    def __init__(self,*args,**kwargs):
+        super(Portfolio,self).__init__(*args,**kwargs)
+        self.__compute()
+
+    def __str__(self):
+        return self.reporting_name
+
+    def __compute(self):
+        self.__value = Decimal(0.)
+        self.__cost  = Decimal(0.)
+        self.__gain  = Decimal(0.)
+
+        for lot in self.lots.all():
+            prices = lot.symbol.daily_prices.all().filter(
+                price_date__lte=datetime.date.today(),
+            ).order_by("-price_date")[:2]
+            new = Decimal(prices[0].close_price)
+            old = Decimal(prices[1].close_price)
+            print prices[0].price_date,new,prices[1].price_date,old
+
+            self.__value += lot.quantity*new
+            self.__gain  += lot.quantity*(new-old)
+            self.__cost  += lot.quantity*lot.price+lot.fees
+        self.__pl = self.__value-self.__cost
+
+    @property
+    def value(self):
+        return round(self.__value,2)
+
+    @property
+    def cost(self):
+        return round(self.__cost,2)
+
+    @property
+    def daily_gain(self):
+        return round(self.__gain,2)
+
+    @property
+    def p_l(self):
+        return round(self.__pl,2)
+
+class Lot(models.Model):
+
+    """ Lot model """
+
+    portfolio = models.ForeignKey(
+        "data.Portfolio",
+        related_name="lots",
+        related_query_name="lot",
+    )
+
+    symbol = models.ForeignKey(
+        "data.Symbol",
+        related_name="lots",
+        related_query_name="lot",
+    )
+
+    date = models.DateField()
+
+    quantity = models.DecimalField(
+        max_digits=19,
+        decimal_places=2
+    )
+
+    price = models.DecimalField(
+        max_digits=19,
+        decimal_places=4
+    )
+
+    fees = models.DecimalField(
+        max_digits=19,
+        decimal_places=2
+    )
+
+    def __str__(self):
+        return "{0:s}".format(self.symbol.ticker)
