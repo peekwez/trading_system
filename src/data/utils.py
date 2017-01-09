@@ -7,16 +7,15 @@ import time
 
 import csv
 
-from data.misc import info
+from data.misc import info, yahoo_date_fmt
 from data.models import DataVendor, Exchange, Symbol, DailyPrice
 from data.constants import (DATA_VENDOR, INDICES, EXCHANGES,
-                            QUOTES_MAP, YAHOO_DATE_FMT,
-                            SECTOR_URL, SECTORS)
+                            QUOTES_MAP, SECTOR_URL, SECTORS)
 
 
 
 yahoo,created = DataVendor.objects.get_or_create(**DATA_VENDOR['yahoo'])
-yahoo_history = lambda ticker: yahoo.historical_url + '?s={0:s}&'.format(ticker) + YAHOO_DATE_FMT
+yahoo_history = lambda ticker: yahoo.historical_url + '?s={0:s}&'.format(ticker) + yahoo_date_fmt()
 yahoo_quotes = lambda tickers: yahoo.quotes_url+'?s='+','.join(ticker for ticker in tickers) + '&f=nsohgl1v'
 
 def yahoo2db_tickers(ticker):

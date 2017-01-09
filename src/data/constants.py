@@ -16,8 +16,6 @@ DATA_VENDOR = {
     },
 }
 
-YAHOO_DATE_FMT = yahoo_date_fmt()
-
 INDICES = {
     'S&P/TSX': {
         'constituents_url': 'http://web.tmxmoney.com/constituents_data.php?index=^TSX&index_name=S%26P%2FTSX+Composite+Index',
