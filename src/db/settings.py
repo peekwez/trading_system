@@ -122,7 +122,7 @@ CELERYBEAT_SCHEDULE = {
     'add-historical-prices-once-a-year': {
         'task': 'data.tasks.add_historical_data_all',
         'schedule': crontab(minute='30',
-                            hour='10',
+                            hour='7',
                             day_of_week='mon',
                             day_of_month='1-7',
                             month_of_year='1'),
@@ -131,7 +131,7 @@ CELERYBEAT_SCHEDULE = {
     'add-or-update-symbols-once-a-month': {
         'task': 'data.tasks.add_symbols',
         'schedule': crontab(minute='30',
-                            hour='10',
+                            hour='7',
                             day_of_week='mon',
                             day_of_month='1-7',
                             month_of_year='*/1'),
