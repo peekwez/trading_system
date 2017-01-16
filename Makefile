@@ -54,6 +54,10 @@ celery-flower:
 	$(call _info, Starting celery flower on port 8001)
 	celery --app=db.celery:app flower --port=8001
 
+celery-flower-local:
+	$(call _info, Starting celery flower on local machine port 8001)
+	celery --app=db.celery:app flower --address=159.203.13.221 --port=8001
+
 ipython-notebook:
 	$(call _info, Starting ipython notebook on port 8002)
 	./src/manage.py shell_plus --notebook
@@ -76,6 +80,14 @@ processes:
 	sleep 5
 	supervisorctl restart web-client:flower
 
+local-processes:
+	$(call _info, Starting supervisord local processes)
+	supervisord -c supervisord-local.conf
+
+local-restart:
+	$(call _info, Starting supervisord local processes)
+	supervisorctl restart clients:*
+
 restart:
 	$(call _info, Restarting $(process) supervisord processes)
 	supervisorctl restart $(process)
@@ -88,6 +100,11 @@ restartall:
 	supervisorctl restart web-client:flower
 	supervisorctl restart web-client:notebook
 	supervisorctl restart web-client:redis
+
+local-status:
+	$(call _info, Checking status of local supervisord processes)
+	supervisorctl status clients:*
+
 status:
 	$(call _info, Checking status of supervisord processes)
 	supervisorctl status db-celery:*

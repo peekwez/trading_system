@@ -99,8 +99,6 @@ DATABASES = {
         'PORT': "5431",
     }
 }
-if os.environ.has_key('BUILD_ON_TRAVIS'):
-    DATABASES['default']['PORT'] = "5432"
 
 
 # Celery redis broker
@@ -110,6 +108,16 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'EST'
+
+
+# Host specific changes
+if os.environ.has_key('BUILD_ON_TRAVIS'):
+    DATABASES['default']['PORT'] = "5432"
+elif not(os.environ.has_key('BUILD_ON_TRAVIS') or
+         os.environ.has_key('BUILD_on_KWAP')):
+    DATABASES['default']['HOST'] = '159.203.13.221'
+    BROKER_URL = "redis://159.203.13.221:6378"
+    CELERY_RESULT_BACKEND = "redis://159.203.13.221:6378"
 
 CELERYBEAT_SCHEDULE = {
     'add-or-update-quotes-every-10-minutes': {

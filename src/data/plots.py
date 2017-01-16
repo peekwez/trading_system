@@ -13,7 +13,7 @@ from matplotlib import rc, gridspec
 from matplotlib.ticker import FuncFormatter, MaxNLocator
 
 # import some math libraries
-from math import floor, ceil
+from math import floor, ceil, log10
 
 # import database models
 from data.misc import colors
@@ -96,7 +96,7 @@ class PlotSymbol:
 
 
         # add moving averages
-        ma_keys = ['MA_5', 'MA_10', 'MA_20', 'MA_30', 'MA_40', 'MA_50', 'MA_60']
+        ma_keys = ['MA_5', 'MA_10', 'MA_20', 'MA_50', 'MA_100', 'MA_200']
         len_ma = len(ma_keys)
         for k in range(len_ma):
             ma   = ma_keys[k]
@@ -140,7 +140,8 @@ class PlotSymbol:
         # set limits for y-axis
         ymax = ts.max()
         ymin = ts.min()
-        ax1.set_ylim([floor(ymin), max(ymax, floor(ymax)+0.5)])
+        offset = 0.5*(10**min(1,floor(log10(ymax))))
+        ax1.set_ylim([floor(ymin), max(ymax,floor(ymax)+offset)])
 
         # get plot end values and add legends
         legs = ax1.legend(frameon=False, fontsize=13, loc='best', prop=font_prop)
@@ -151,7 +152,7 @@ class PlotSymbol:
         for k, line in enumerate(lines):
             value = line.get_ydata()[-1]
             text  = texts[k].get_text()
-            label = '{0:6s} - {1:0.2f} {2:s}'.format(text,value,currency)
+            label = '{0:7s} - {1:0.2f} {2:s}'.format(text,value,currency)
 
             # set new values and labels
             handles[k].set_linewidth(4.0)
