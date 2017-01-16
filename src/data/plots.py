@@ -96,7 +96,7 @@ class PlotSymbol:
 
 
         # add moving averages
-        ma_keys = ['MA_5', 'MA_10', 'MA_20', 'MA_50', 'MA_100', 'MA_200']
+        ma_keys = ['MA_5', 'MA_10', 'MA_20', 'MA_60', 'MA_100', 'MA_200']
         len_ma = len(ma_keys)
         for k in range(len_ma):
             ma   = ma_keys[k]
