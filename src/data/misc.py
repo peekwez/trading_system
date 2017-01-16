@@ -87,10 +87,9 @@ class colors:
     MA    = {'MA_5': '#ff3333',
              'MA_10': '#3fc03f',
              'MA_20': '#8533ff',
-             'MA_50': '#ffcc00',
+             'MA_60': '#ff1ab1'
              'MA_100': '#00cbcc',
              'MA_200': '#ff751a',
-             'MA_60': '#ff1ab1'
          }
 
 class info:
