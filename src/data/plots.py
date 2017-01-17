@@ -16,7 +16,7 @@ from matplotlib.ticker import FuncFormatter, MaxNLocator
 from math import floor, ceil, log10
 
 # import database models
-from data.misc import colors
+from data.misc import colors, Mat12
 from data.models import DailyPrice, Symbol
 
 # matplotlib settings
@@ -79,10 +79,11 @@ class PlotSymbol:
 
 
         # get figures and sizes
-        fig = plt.figure(ticker+ma_type, figsize=(11,10))
-        gs  = gridspec.GridSpec(2,1, height_ratios=[5,3])
+        fig = plt.figure(ticker+ma_type, figsize=(11,18))
+        gs  = gridspec.GridSpec(3,1, height_ratios=[5,2,4])
         ax1 = fig.add_subplot(gs[0])
         ax2 = fig.add_subplot(gs[1])
+        ax3 = fig.add_subplot(gs[2])
 
 
         # ADD SUBPLOT FOR KEY
@@ -174,10 +175,13 @@ class PlotSymbol:
 
         # set axis labels
         ax2.set_xlabel('Date', fontproperties=font_prop, size=13)
-        ax2.set_ylabel('Volume (in 1000 stocks)', fontproperties=font_prop, size=13)
+        ax2.set_ylabel('Volume (in 1000 shares)', fontproperties=font_prop, size=13)
+        #ax2.set_yscale('log')
+
 
         # set axis ticks
-        plt.xticks(rotation=75)
+        #plt.xticks(rotation=75)
+        plt.setp(ax2.get_xticklabels(), visible=False)
         for label in ax2.get_xticklabels():
             label.set_fontproperties(font_prop)
         ax2.set_yticklabels(ax2.get_yticks(), fontproperties=font_prop)
@@ -190,6 +194,75 @@ class PlotSymbol:
         ax2_yfmt = FuncFormatter(lambda x, pos: '{0:g}'.format(x/1000))
         ax2.yaxis.set_major_formatter(ax2_yfmt)
         ax2.yaxis.set_major_locator(MaxNLocator(prune='upper')) # remove last tick label
+
+        # remove horizontal space between subplots
+        fig.subplots_adjust(hspace=0.001)
+
+        # ADD SUBPLOT OF VOLUME MOVING AVERAGE
+        # =====================================
+
+        # plot slope of volume
+        Bmat = pd.DataFrame(Mat12(len(vs.values)))
+        ds = pd.Series(Bmat.dot(vs.values).values, index=vs.index)
+        ds.plot(ax=ax3,color=colors.SYMB, legend=True, label="slope")
+
+        for k in range(len_ma):
+            ma   = ma_keys[k]
+            tmp  = ma.split('_')
+            days = int(tmp[1])
+            end_label = ' '.join(word for word in tmp)
+
+            # plot simple moving average
+            if ma_type == 'simple':
+                label = 'S' + end_label
+                pd.rolling_mean(vs,days).plot(ax=ax3,
+                                              color=colors.MA[ma],
+                                              legend=True,
+                                              label=label)
+            elif ma_type == 'exponential':
+                label = 'E' + end_label
+                pd.ewma(vs,span=days).plot(ax=ax3,
+                                           color=colors.MA[ma],
+                                           legend=True,
+                                           label=label)
+
+
+        # set axis labels
+        ax3.set_xlabel('Date', fontproperties=font_prop, size=13)
+        ax3.set_ylabel('Volume MA (in 1000 shares)', fontproperties=font_prop, size=13)
+
+        # set axis ticks
+        plt.xticks(rotation=75)
+        for label in ax3.get_xticklabels():
+            label.set_fontproperties(font_prop)
+        ax3.set_yticklabels(ax3.get_yticks(), fontproperties=font_prop)
+
+        # turn on grid
+        ax3.xaxis.grid()
+        ax3.yaxis.grid()
+
+        # formatter for y-axis
+        ax3_yfmt = FuncFormatter(lambda x, pos: '{0:g}'.format(x/1000))
+        ax3.yaxis.set_major_formatter(ax3_yfmt)
+        ax3.yaxis.set_major_locator(MaxNLocator(prune='upper')) # remove last tick label
+
+         # get plot end values and add legends
+        legs3= ax3.legend(frameon=False, fontsize=13, ncol=2, loc='best', prop=font_prop)
+        lines3 = ax3.lines
+
+        texts3= legs3.get_texts()
+        handles3 = legs3.legendHandles
+        for k, line in enumerate(lines3):
+            if k == 0:
+                label = 'slope'
+            else:
+                value = line.get_ydata()[-1]
+                text  = texts3[k].get_text()
+                label = '{0:7s} - {1:d}'.format(text,int(value/1000))
+
+            # set new values and labels
+            handles3[k].set_linewidth(4.0)
+            texts3[k].set_text(label)
 
         # remove horizontal space between subplots
         fig.subplots_adjust(hspace=0.001)

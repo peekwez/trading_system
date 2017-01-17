@@ -3,10 +3,26 @@ from __future__ import absolute_import
 
 import csv
 import os
+import numpy as np
 
 from datetime import date
 
 
+
+def Mat12(n):
+    tmp = np.zeros([n,n])
+    tmp[0,0] = -1.5
+    tmp[0,1] =  2.
+    tmp[0,2] = -0.5
+
+    tmp[-1,-1] =  1.5
+    tmp[-1,-2] = -2.;
+    tmp[-1,-3] =  0.5
+
+    for k in range(1,n-1):
+        tmp[k,k-1] = -0.5;
+        tmp[k,k+1] =  0.5;
+    return tmp
 
 def yahoo_date_fmt():
     end_date = date.today().timetuple()
