@@ -79,8 +79,8 @@ class PlotSymbol:
 
 
         # get figures and sizes
-        fig = plt.figure(ticker+ma_type, figsize=(11,18))
-        gs  = gridspec.GridSpec(3,1, height_ratios=[5,2,4])
+        fig = plt.figure(ticker+ma_type, figsize=(11,16))
+        gs  = gridspec.GridSpec(3,1, height_ratios=[5,2,5])
         ax1 = fig.add_subplot(gs[0])
         ax2 = fig.add_subplot(gs[1])
         ax3 = fig.add_subplot(gs[2])
@@ -93,11 +93,11 @@ class PlotSymbol:
         ts.plot(ax=ax1, color=colors.SYMB, legend=True, label='{0:s}'.format(ticker))
 
         # add fill to plot
-        ax1.fill_between(ts.index, ts.values, facecolor=colors.FILL, alpha=0.9)
+        ax1.fill_between(ts.index, ts.values, facecolor=colors.FILL, alpha=0.3)
 
 
         # add moving averages
-        ma_keys = ['MA_5', 'MA_10', 'MA_20', 'MA_60', 'MA_100', 'MA_200']
+        ma_keys = ['MA_5', 'MA_20', 'MA_60', 'MA_200']
         len_ma = len(ma_keys)
         for k in range(len_ma):
             ma   = ma_keys[k]
@@ -123,7 +123,7 @@ class PlotSymbol:
         name = lambda w: ' '.join(word.capitalize() for word in w.split('_'))
 
         # set axis labels
-        ax1.set_xlabel('Date', fontproperties=font_prop, size=13)
+        ax1.set_xlabel('', fontproperties=font_prop, size=13)
         ax1.set_ylabel('{0:s} ({1:s})'.format(name(key), currency), fontproperties=font_prop, size=13)
 
         # set axis ticks
@@ -174,7 +174,7 @@ class PlotSymbol:
         ax2.vlines(vs.index, [0], vs.values, color=colors.VLINE)
 
         # set axis labels
-        ax2.set_xlabel('Date', fontproperties=font_prop, size=13)
+        ax2.set_xlabel('', fontproperties=font_prop, size=13)
         ax2.set_ylabel('Volume (in 1000 shares)', fontproperties=font_prop, size=13)
         #ax2.set_yscale('log')
 
@@ -228,7 +228,7 @@ class PlotSymbol:
 
 
         # set axis labels
-        ax3.set_xlabel('Date', fontproperties=font_prop, size=13)
+        ax3.set_xlabel('', fontproperties=font_prop, size=13)
         ax3.set_ylabel('Volume MA (in 1000 shares)', fontproperties=font_prop, size=13)
 
         # set axis ticks

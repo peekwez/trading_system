@@ -97,15 +97,15 @@ def update_other_sectors():
 
 class colors:
     # hex color codes for plots
-    SYMB  = '#004c99'
-    FILL  = '#e5f2ff'
-    VLINE = '#004c99'
+    SYMB  = '#003166' #'#004c99'
+    FILL  = '#e6f2ff'  #'#e5f2ff'
+    VLINE = '#003166'  #'#004c99'
     MA    = {'MA_5': '#ff3333',
              'MA_10': '#3fc03f',
-             'MA_20': '#8533ff',
-             'MA_60': '#ff1ab1',
+             'MA_20': '#009933', #'#8533ff',
+             'MA_60': '#b3b300', #'#ff1ab1',
              'MA_100': '#00cbcc',
-             'MA_200': '#ff751a',
+             'MA_200': '#b300b3', #'#ff751a',
          }
 
 class info:
