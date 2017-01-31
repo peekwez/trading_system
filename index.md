@@ -79,7 +79,7 @@ the first command starts the following processes as a daemon
 * `tasks.update_daily_quotes` task is executed every __10 minutes__ between __9am-6pm__ during the weekdays using `celery-beat` as the scheduler and the `celery-worker` as the task queue.
 
 ## **After System Restart/Reboot**
-`cd` into application directory and execute the following commands
+`cd` into the application directory and execute the following commands
 
 ```sh
 $ make docker-services
@@ -87,7 +87,9 @@ $ make processes
 ```
 
 ## **Miscellaneous**
+
 ### Sample Python Script
+
 The test script below uses the [`ipython notebook`](http://localhost:8002) launched to generate a simple moving average for companies whose latest __close value__ is greater or equal to __$0.5__ but less or equal to __$2.5__, and also with an average volume of __100000__ shares since listed on the __TSX__ exchange. The second part of the script performs a backward and forward test for a random (__coin flip__) trading strategy (__short__ = 1, __long__ = 0) using the tickers from the first part.
 
 ```python
