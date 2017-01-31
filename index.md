@@ -13,14 +13,14 @@ Install the following system dependencies
 ## **Installation**
 
 ### Clone Repository.
-```
+```sh
 $ git clone git@github.com:<peekwez>/trading_system.git
 $ cd trading_system
 ```
 
 ### Install Application Dependencies
 Copy and paste the lines below to install the following dependencies
-```
+```sh
 $ sudo apt-get install -y build-essential gfortran gcc libatlas-base-dev  curl git python-dev libpq-dev libssl-dev postgresql-client libxml2-dev libxsltl-dev libgraphviz-dev libopenblas-dev liblapack-dev
 $ sudo apt-get build-dep python-matplotlib
 $ pip install -r requirements.txt
@@ -30,7 +30,7 @@ $ npm install -g redis-commander
 ## **Setup Instructions**
 
 ### Initial Setup
-```
+```sh
 $ make setup
 ```
 
@@ -43,7 +43,7 @@ the command chains several commands to
 * create a `logs` directory in `trading_system/src/` and log files for all the supervisor processes inside the `logs` directory
 
 ### Supervisor Processes
-```
+```sh
 $ make processes
 $ make status  # (Check if processes are up and running)
 ```
@@ -79,7 +79,7 @@ the first command starts the following processes as a daemon
 
 ## **After System Restart/Reboot**
 `cd` into application directory and execute the following commands
-```
+```sh
 $ make docker-services
 $ make processes
 ```
@@ -161,7 +161,7 @@ for k,ticker in enumerate(tickers[:end]):
 
 ### Makefile Help
 Use the command below to see the options available for Makefile
-```
+```sh
 $ make help
 ```
 
