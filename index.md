@@ -80,7 +80,7 @@ the first command starts the following processes as a daemon
 
 ## **After System Restart/Reboot**
 `cd` into application directory and execute the following commands
-
+###
 ```sh
 $ make docker-services
 $ make processes
@@ -163,7 +163,7 @@ for k,ticker in enumerate(tickers[:end]):
 
 ### Makefile Help
 Use the command below to see the options available for Makefile
-
+###
 ```sh
 $ make help
 ```
