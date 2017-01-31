@@ -20,7 +20,8 @@ $ cd trading_system
 
 ### Install Application Dependencies
 Copy and paste the lines below to install the following dependencies
-##
+
+###
 ```sh
 $ sudo apt-get install -y build-essential gfortran gcc libatlas-base-dev  curl git python-dev libpq-dev libssl-dev postgresql-client libxml2-dev libxsltl-dev libgraphviz-dev libopenblas-dev liblapack-dev
 $ sudo apt-get build-dep python-matplotlib
@@ -80,6 +81,7 @@ the first command starts the following processes as a daemon
 
 ## **After System Restart/Reboot**
 `cd` into application directory and execute the following commands
+
 ###
 ```sh
 $ make docker-services
@@ -163,6 +165,7 @@ for k,ticker in enumerate(tickers[:end]):
 
 ### Makefile Help
 Use the command below to see the options available for Makefile
+
 ###
 ```sh
 $ make help
