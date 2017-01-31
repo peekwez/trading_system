@@ -20,7 +20,7 @@ $ cd trading_system
 
 ### Install Application Dependencies
 Copy and paste the lines below to install the following dependencies
-
+###
 ```sh
 $ sudo apt-get install -y build-essential gfortran gcc libatlas-base-dev  curl git python-dev libpq-dev libssl-dev postgresql-client libxml2-dev libxsltl-dev libgraphviz-dev libopenblas-dev liblapack-dev
 $ sudo apt-get build-dep python-matplotlib
